@@ -1,0 +1,7 @@
+bin
+obj
+*.userprefs
+*.DS_Store
+packages
+.vs/
+*.csproj.user
