@@ -2,4 +2,18 @@
 	<Runtime>
 		<Import assembly="MonoDevelop.ProjectSystem.Tools.dll" />
 	</Runtime>
+
+	<Extension path="/MonoDevelop/ProjectModel/ProjectModelExtensions">
+		<Class class="MonoDevelop.ProjectSystem.Tools.BuildLoggingProjectExtension" />
+	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/Pads">
+		<Pad
+			id="MonoDevelop.ProjectSystem.Tools.BuildLoggingPad"
+			_label="Build Logging"
+			class="MonoDevelop.ProjectSystem.Tools.Gui.BuildLoggingPad"
+			defaultPlacement="Bottom"
+			defaultStatus="AutoHide"
+			defaultLayout="*" />
+	</Extension>
 </ExtensionModel>

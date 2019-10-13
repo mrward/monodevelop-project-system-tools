@@ -29,12 +29,28 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <IncludeInPackage>false</IncludeInPackage>
     </Compile>
     <Compile Include="Properties\AddinInfo.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildLoggingProjectExtension.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildLoggingService.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetMonitor.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BuildLoggingPad.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BuildLoggingWidget.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BuildLoggingWidget.UI.cs">
+      <DependentUpon>BuildLoggingWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetEventArgs.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTarget.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetStatus.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetStatusExtensions.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\ProjectExtensions.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\TargetEvaluationResultExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.ProjectSystem.Tools.addin.xml">
