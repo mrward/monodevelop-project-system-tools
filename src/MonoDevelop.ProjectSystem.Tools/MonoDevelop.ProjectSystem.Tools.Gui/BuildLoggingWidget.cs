@@ -24,6 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using System.IO;
+using MonoDevelop.Core;
+using MonoDevelop.Ide;
+using MonoDevelop.Ide.Gui;
+using MonoDevelop.Projects;
+using Xwt;
+
 namespace MonoDevelop.ProjectSystem.Tools.Gui
 {
 	partial class BuildLoggingWidget
@@ -31,10 +39,12 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		public BuildLoggingWidget ()
 		{
 			Build ();
+			listView.RowActivated += ListViewRowActivated;
 		}
 
 		public void ClearItems ()
 		{
+			DeleteMSBuildOutputFiles ();
 			listStore.Clear ();
 		}
 
@@ -83,6 +93,46 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 					return;
 				}
+			}
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+
+			if (disposing) {
+				DeleteMSBuildOutputFiles ();
+			}
+		}
+
+		void DeleteMSBuildOutputFiles ()
+		{
+			MSBuildTarget target = null;
+
+			for (int row = 0; row < listStore.RowCount; ++row) {
+				try {
+					target = listStore.GetValue (row, msbuildTargetDataField);
+					if (target.LogFileName.IsNotNull) {
+						File.Delete (target.LogFileName);
+					}
+				} catch (Exception ex) {
+					LoggingService.LogError (
+						string.Format ("Unable to remove msbuild output file {0}", target),
+						ex);
+				}
+			}
+		}
+
+		void ListViewRowActivated (object sender, ListViewRowEventArgs e)
+		{
+			if (e.RowIndex < 0) {
+				return;
+			}
+
+			MSBuildTarget target = listStore.GetValue (e.RowIndex, msbuildTargetDataField);
+			if (target.LogFileName.IsNotNull) {
+				IdeApp.Workbench.OpenDocument (target.LogFileName, (Project)null)
+					.Ignore ();
 			}
 		}
 	}

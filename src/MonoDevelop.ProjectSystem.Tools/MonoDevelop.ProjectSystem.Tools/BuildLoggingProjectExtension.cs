@@ -52,7 +52,8 @@ namespace MonoDevelop.ProjectSystem.Tools
 		{
 			using (var buildMonitor = new MSBuildTargetMonitor (Project, target, configuration, context)) {
 				try {
-					TargetEvaluationResult result = await base.OnRunTarget (monitor, target, configuration, context);
+					ProgressMonitor modifiedMonitor = buildMonitor.GetProgressMonitor (monitor);
+					TargetEvaluationResult result = await base.OnRunTarget (modifiedMonitor, target, configuration, context);
 					buildMonitor.OnResult (result);
 					return result;
 				} catch (Exception ex) {

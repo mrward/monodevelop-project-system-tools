@@ -1,5 +1,5 @@
 ﻿//
-// MSBuildTarget.cs
+// MSBuildTargetProgressMonitor.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,39 +24,61 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
+using System.IO;
+using System.Text;
 using MonoDevelop.Core;
-using MonoDevelop.Projects;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
-	class MSBuildTarget
+	class MSBuildTargetProgressMonitor : ProgressMonitor
 	{
-		public string Targets { get; set; }
-		public string ProjectFileName { get; set; }
-		public string BuildType { get; set; }
-		public string Dimensions { get; set; }
+		StringBuilder logBuilder = StringBuilderCache.Allocate ();
+		bool disposed;
 
-		public DateTime StartTime { get; set; }
-		public TimeSpan Duration { get; set; }
+		public FilePath LogFileName { get; private set; }
 
-		public MSBuildTargetStatus Status { get; set; }
-
-		public FilePath LogFileName { get; set; }
-
-		public static string GetBuildType (string target)
+		protected override void OnWriteLog (string message)
 		{
-			if (string.IsNullOrEmpty (target)) {
-				return string.Empty;
+			lock (logBuilder) {
+				logBuilder.Append (message);
 			}
+		}
 
-			if (target == ProjectService.BuildTarget ||
-				target == ProjectService.CleanTarget ||
-				target == "Pack") {
-				return "Build";
+		protected override void OnWriteErrorLog (string message)
+		{
+			lock (logBuilder) {
+				logBuilder.Append (message);
 			}
+		}
 
-			return "DesignTimeBuild";
+		protected override void OnWriteLogObject (object logObject)
+		{
+		}
+
+		protected override void OnDispose (bool disposing)
+		{
+			base.OnDispose (disposing);
+
+			if (disposing && !disposed) {
+				lock (logBuilder) {
+					disposed = true;
+					SaveLogOutputToFile ();
+				}
+			}
+		}
+
+		void SaveLogOutputToFile ()
+		{
+			LogFileName = GenerateLogFileName ();
+			string text = logBuilder.ToString ();
+			File.WriteAllText (LogFileName, text);
+
+			StringBuilderCache.Free (logBuilder);
+		}
+
+		static FilePath GenerateLogFileName ()
+		{
+			return Path.GetTempFileName () + "msbuild.log";
 		}
 	}
 }

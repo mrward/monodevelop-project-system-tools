@@ -60,6 +60,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			BuildLoggingService.MSBuildTargetStarted -= MSBuildTargetStarted;
 			BuildLoggingService.MSBuildTargetFinished -= MSBuildTargetFinished;
 
+			widget.Dispose ();
+
 			base.Dispose ();
 		}
 

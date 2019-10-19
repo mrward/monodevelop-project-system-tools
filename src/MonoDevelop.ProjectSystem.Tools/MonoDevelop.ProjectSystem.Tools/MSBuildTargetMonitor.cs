@@ -26,6 +26,8 @@
 
 using System;
 using System.Diagnostics;
+using MonoDevelop.Core;
+using MonoDevelop.Core.ProgressMonitoring;
 using MonoDevelop.Projects;
 
 namespace MonoDevelop.ProjectSystem.Tools
@@ -34,6 +36,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 	{
 		MSBuildTarget buildTarget;
 		Stopwatch stopwatch;
+		MSBuildTargetProgressMonitor progressMonitor;
 
 		public MSBuildTargetMonitor (
 			Project project,
@@ -54,25 +57,53 @@ namespace MonoDevelop.ProjectSystem.Tools
 			BuildLoggingService.OnTargetStarted (buildTarget);
 		}
 
+		public ProgressMonitor GetProgressMonitor (ProgressMonitor monitor)
+		{
+			var aggregatedMonitor = monitor as AggregatedProgressMonitor;
+			if (aggregatedMonitor == null) {
+				aggregatedMonitor = new AggregatedProgressMonitor (monitor);
+			}
+
+			progressMonitor = new MSBuildTargetProgressMonitor ();
+			aggregatedMonitor.AddFollowerMonitor (progressMonitor);
+
+			return aggregatedMonitor;
+		}
+
 		public void Dispose ()
 		{
 			stopwatch.Stop ();
+
+			progressMonitor?.Dispose ();
 		}
 
 		public void OnResult (TargetEvaluationResult result)
 		{
 			stopwatch.Stop ();
+
+			progressMonitor?.Dispose ();
+
 			buildTarget.Status = result.GetMSBuildTargetStatus ();
 			buildTarget.Duration = stopwatch.Elapsed;
+			buildTarget.LogFileName = GetLogFileName ();
 
 			BuildLoggingService.OnTargetFinished (buildTarget);
+		}
+
+		FilePath GetLogFileName ()
+		{
+			return progressMonitor?.LogFileName ?? FilePath.Null;
 		}
 
 		public void OnException (Exception ex)
 		{
 			stopwatch.Stop ();
+
+			progressMonitor?.Dispose ();
+
 			buildTarget.Duration = stopwatch.Elapsed;
 			buildTarget.Status = MSBuildTargetStatus.Exception;
+			buildTarget.LogFileName = GetLogFileName ();
 
 			BuildLoggingService.OnTargetFinished (buildTarget);
 		}
