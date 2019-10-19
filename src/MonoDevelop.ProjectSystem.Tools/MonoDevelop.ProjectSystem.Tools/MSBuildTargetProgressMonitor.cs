@@ -32,10 +32,14 @@ namespace MonoDevelop.ProjectSystem.Tools
 {
 	class MSBuildTargetProgressMonitor : ProgressMonitor
 	{
+		FilePath logFileName;
 		StringBuilder logBuilder = StringBuilderCache.Allocate ();
 		bool disposed;
 
-		public FilePath LogFileName { get; private set; }
+		public MSBuildTargetProgressMonitor (FilePath logFileName)
+		{
+			this.logFileName = logFileName;
+		}
 
 		protected override void OnWriteLog (string message)
 		{
@@ -69,16 +73,10 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		void SaveLogOutputToFile ()
 		{
-			LogFileName = GenerateLogFileName ();
 			string text = logBuilder.ToString ();
-			File.WriteAllText (LogFileName, text);
+			File.WriteAllText (logFileName, text);
 
 			StringBuilderCache.Free (logBuilder);
-		}
-
-		static FilePath GenerateLogFileName ()
-		{
-			return Path.GetTempFileName () + "msbuild.log";
 		}
 	}
 }

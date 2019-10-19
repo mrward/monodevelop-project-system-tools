@@ -48,6 +48,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 			context.LogVerbosity = Runtime.Preferences.MSBuildVerbosity.Value;
 
 			buildTarget = new MSBuildTarget {
+				ProjectName = project.Name,
 				ProjectFileName = project.FileName.FileName,
 				Targets = target ?? string.Empty,
 				BuildType = MSBuildTarget.GetBuildType (target),
@@ -67,7 +68,9 @@ namespace MonoDevelop.ProjectSystem.Tools
 				aggregatedMonitor = new AggregatedProgressMonitor (monitor);
 			}
 
-			progressMonitor = new MSBuildTargetProgressMonitor ();
+			buildTarget.GenerateLogFileName ();
+
+			progressMonitor = new MSBuildTargetProgressMonitor (buildTarget.LogFileName);
 			aggregatedMonitor.AddFollowerMonitor (progressMonitor);
 
 			return aggregatedMonitor;
@@ -88,14 +91,8 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 			buildTarget.Status = result.GetMSBuildTargetStatus ();
 			buildTarget.Duration = stopwatch.Elapsed;
-			buildTarget.LogFileName = GetLogFileName ();
 
 			BuildLoggingService.OnTargetFinished (buildTarget);
-		}
-
-		FilePath GetLogFileName ()
-		{
-			return progressMonitor?.LogFileName ?? FilePath.Null;
 		}
 
 		public void OnException (Exception ex)
@@ -106,7 +103,6 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 			buildTarget.Duration = stopwatch.Elapsed;
 			buildTarget.Status = MSBuildTargetStatus.Exception;
-			buildTarget.LogFileName = GetLogFileName ();
 
 			BuildLoggingService.OnTargetFinished (buildTarget);
 		}

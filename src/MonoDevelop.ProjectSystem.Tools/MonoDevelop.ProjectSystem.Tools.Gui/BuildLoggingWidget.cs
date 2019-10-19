@@ -130,7 +130,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			}
 
 			MSBuildTarget target = listStore.GetValue (e.RowIndex, msbuildTargetDataField);
-			if (target.LogFileName.IsNotNull) {
+			if (target.LogFileName.IsNotNull && File.Exists (target.LogFileName)) {
 				IdeApp.Workbench.OpenDocument (target.LogFileName, (Project)null)
 					.Ignore ();
 			}

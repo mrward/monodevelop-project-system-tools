@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.IO;
 using MonoDevelop.Core;
 using MonoDevelop.Projects;
 
@@ -33,6 +34,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 	class MSBuildTarget
 	{
 		public string Targets { get; set; }
+		public string ProjectName { get; set; }
 		public string ProjectFileName { get; set; }
 		public string BuildType { get; set; }
 		public string Dimensions { get; set; }
@@ -42,7 +44,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		public MSBuildTargetStatus Status { get; set; }
 
-		public FilePath LogFileName { get; set; }
+		public FilePath LogFileName { get; private set; }
 
 		public static string GetBuildType (string target)
 		{
@@ -57,6 +59,36 @@ namespace MonoDevelop.ProjectSystem.Tools
 			}
 
 			return "DesignTimeBuild";
+		}
+
+		public void GenerateLogFileName ()
+		{
+			LogFileName = Path.Combine (Path.GetTempPath (), GetLogFileNameWithoutPath ());
+		}
+
+		/// <summary>
+		/// Get a unique log file name. Based on:
+		/// https://github.com/dotnet/project-system-tools/blob/7eb2f653890c159f750781de56bc7d261e7f4255/src/ProjectSystemTools/BuildLogging/Model/LoggerBase.cs#L22
+		/// </summary>
+		string GetLogFileNameWithoutPath ()
+		{
+			string fileName = string.Format (
+				"{0}_{1}{2}_{3}.msbuild.log",
+				ProjectName,
+				GetDimensionLogFileNamePart (),
+				BuildType,
+				StartTime.ToString ("o")
+			);
+			return fileName.Replace (':', '_');
+		}
+
+		string GetDimensionLogFileNamePart ()
+		{
+			if (string.IsNullOrEmpty (Dimensions)) {
+				return string.Empty;
+			}
+
+			return Dimensions.Replace ('|', '_') + "_";
 		}
 	}
 }
