@@ -44,6 +44,9 @@ namespace MonoDevelop.ProjectSystem.Tools
 			ConfigurationSelector configuration,
 			TargetEvaluationContext context)
 		{
+			// Ensure log verbosity is set for non-build targets.
+			context.LogVerbosity = Runtime.Preferences.MSBuildVerbosity.Value;
+
 			buildTarget = new MSBuildTarget {
 				ProjectFileName = project.FileName.FileName,
 				Targets = target ?? string.Empty,
