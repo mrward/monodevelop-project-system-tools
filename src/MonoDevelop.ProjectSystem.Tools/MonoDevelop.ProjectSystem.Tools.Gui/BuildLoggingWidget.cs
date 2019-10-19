@@ -26,9 +26,10 @@
 
 using System;
 using System.IO;
+using MonoDevelop.Components;
+using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
-using MonoDevelop.Ide.Gui;
 using MonoDevelop.Projects;
 using Xwt;
 
@@ -39,7 +40,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		public BuildLoggingWidget ()
 		{
 			Build ();
+
 			listView.RowActivated += ListViewRowActivated;
+			listView.ButtonPressed += ListViewButtonPressed;
 		}
 
 		public void ClearItems ()
@@ -101,6 +104,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			base.Dispose (disposing);
 
 			if (disposing) {
+				listView.RowActivated -= ListViewRowActivated;
+				listView.ButtonPressed -= ListViewButtonPressed;
+
 				DeleteMSBuildOutputFiles ();
 			}
 		}
@@ -125,15 +131,53 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		void ListViewRowActivated (object sender, ListViewRowEventArgs e)
 		{
-			if (e.RowIndex < 0) {
+			OpenLogFileForRow (e.RowIndex);
+		}
+
+		void OpenLogFileForRow (int row)
+		{
+			if (row < 0) {
 				return;
 			}
 
-			MSBuildTarget target = listStore.GetValue (e.RowIndex, msbuildTargetDataField);
+			MSBuildTarget target = listStore.GetValue (row, msbuildTargetDataField);
+			if (target == null) {
+				return;
+			}
+
 			if (target.LogFileName.IsNotNull && File.Exists (target.LogFileName)) {
 				IdeApp.Workbench.OpenDocument (target.LogFileName, (Project)null)
 					.Ignore ();
 			}
+		}
+
+		void ListViewButtonPressed (object sender, ButtonEventArgs e)
+		{
+			if (!e.IsContextMenuTrigger) {
+				return;
+			}
+
+			var commands = IdeApp.CommandService.CreateCommandEntrySet ("/MonoDevelop/BuildLoggingPad/ContextMenu");
+			IdeApp.CommandService.ShowContextMenu (listView.ToGtkWidget (), (int)e.X, (int)e.Y, commands, this);
+		}
+
+		[CommandUpdateHandler (BuildLoggingCommands.OpenLogFile)]
+		void OnUpdateOpenLogFile (CommandInfo info)
+		{
+			info.Enabled = IsMSBuildTargetSelected ();
+		}
+
+		[CommandHandler (BuildLoggingCommands.OpenLogFile)]
+		void OpenLogFile ()
+		{
+			if (IsMSBuildTargetSelected ()) {
+				OpenLogFileForRow (listView.SelectedRow);
+			}
+		}
+
+		bool IsMSBuildTargetSelected ()
+		{
+			return listView.SelectedRow >= 0;
 		}
 	}
 }

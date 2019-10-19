@@ -7,6 +7,15 @@
 		<Class class="MonoDevelop.ProjectSystem.Tools.BuildLoggingProjectExtension" />
 	</Extension>
 
+	<Extension path="/MonoDevelop/Ide/Commands">
+		<Category _name="Build Logging" id="BuildLogging">
+			<Command
+				id="MonoDevelop.ProjectSystem.Tools.BuildLoggingCommands.OpenLogFile"
+				_description="Opens the MSBuild log file"
+				_label="_Open Log File" />
+		</Category>
+	</Extension>
+
 	<Extension path="/MonoDevelop/Ide/Pads">
 		<Pad
 			id="MonoDevelop.ProjectSystem.Tools.BuildLoggingPad"
@@ -15,5 +24,14 @@
 			defaultPlacement="Bottom"
 			defaultStatus="AutoHide"
 			defaultLayout="*" />
+	</Extension>
+
+	<ExtensionPoint path="/MonoDevelop/BuildLoggingPad/ContextMenu" name="Build Logging pad context menu">
+		<Description>Build Logging pad context menu.</Description>
+		<ExtensionNodeSet id="MonoDevelop.Components.Commands.ItemSet" />
+	</ExtensionPoint>
+
+	<Extension path="/MonoDevelop/BuildLoggingPad/ContextMenu">
+		<CommandItem id="MonoDevelop.ProjectSystem.Tools.BuildLoggingCommands.OpenLogFile" />
 	</Extension>
 </ExtensionModel>
