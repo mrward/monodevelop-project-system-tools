@@ -141,26 +141,28 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		void OpenLogFileForRow (int row, bool binLog = false)
 		{
-			if (row < 0) {
-				return;
-			}
+			MSBuildTarget target = GetMSBuildTargetForRow (row);
 
-			MSBuildTarget target = listStore.GetValue (row, msbuildTargetDataField);
-			if (target == null) {
-				return;
-			}
-
-			FilePath fileNameToOpen = target.LogFileName;
-
-			if (binLog) {
-				target.CopyBinLogFile ();
-				fileNameToOpen = target.BinLogFileName;
-			}
+			FilePath fileNameToOpen = binLog ? target.BinLogFileName : target.LogFileName;
 
 			if (fileNameToOpen.IsNotNull && File.Exists (fileNameToOpen)) {
 				IdeApp.Workbench.OpenDocument (fileNameToOpen, (Project)null)
 					.Ignore ();
 			}
+		}
+
+		MSBuildTarget GetMSBuildTargetForSelectedRow ()
+		{
+			return GetMSBuildTargetForRow (listView.SelectedRow);
+		}
+
+		MSBuildTarget GetMSBuildTargetForRow (int row)
+		{
+			if (row < 0) {
+				return null;
+			}
+
+			return listStore.GetValue (row, msbuildTargetDataField);
 		}
 
 		void ListViewButtonPressed (object sender, ButtonEventArgs e)
@@ -176,7 +178,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		[CommandUpdateHandler (BuildLoggingCommands.OpenLogFile)]
 		void OnUpdateOpenLogFile (CommandInfo info)
 		{
-			info.Enabled = IsMSBuildTargetSelected ();
+			info.Enabled = MSBuildLogFileExists ();
 		}
 
 		[CommandHandler (BuildLoggingCommands.OpenLogFile)]
@@ -190,7 +192,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		[CommandUpdateHandler (BuildLoggingCommands.OpenBinLogFile)]
 		void OnUpdateOpenBinLogFile (CommandInfo info)
 		{
-			info.Enabled = IsMSBuildTargetSelected ();
+			info.Enabled = MSBuildBinLogFileExists ();
 		}
 
 		[CommandHandler (BuildLoggingCommands.OpenBinLogFile)]
@@ -199,6 +201,29 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			if (IsMSBuildTargetSelected ()) {
 				OpenLogFileForRow (listView.SelectedRow, binLog: true);
 			}
+		}
+
+		bool MSBuildLogFileExists ()
+		{
+			MSBuildTarget target = GetMSBuildTargetForSelectedRow ();
+
+			return target != null &&
+				target.LogFileName.IsNotNull &&
+				File.Exists (target.LogFileName);
+		}
+
+		bool MSBuildBinLogFileExists ()
+		{
+			MSBuildTarget target = GetMSBuildTargetForSelectedRow ();
+
+			if (target == null) {
+				return false;
+			}
+
+			target.CopyBinLogFile ();
+
+			return target.BinLogFileName.IsNotNull &&
+				File.Exists (target.BinLogFileName);
 		}
 
 		bool IsMSBuildTargetSelected ()
