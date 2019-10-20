@@ -27,6 +27,7 @@
 using System.IO;
 using System.Text;
 using MonoDevelop.Core;
+using MonoDevelop.Core.ProgressMonitoring;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
@@ -39,6 +40,10 @@ namespace MonoDevelop.ProjectSystem.Tools
 		public MSBuildTargetProgressMonitor (FilePath logFileName)
 		{
 			this.logFileName = logFileName;
+		}
+
+		public MonitorAction Actions {
+			get { return MonitorAction.WriteLog | MonitorAction.Dispose; }
 		}
 
 		protected override void OnWriteLog (string message)

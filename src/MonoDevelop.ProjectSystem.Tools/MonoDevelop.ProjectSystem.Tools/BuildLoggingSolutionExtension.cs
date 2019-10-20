@@ -54,7 +54,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 			// Enable monitor for WriteLog only. This avoids errors due to a task being started before
 			// the OnBeginBuildOperation was called which the bin log progress monitor is not aware of.
 			var binLogMonitor = new MSBuildBinLogProgressMonitor ();
-			aggregatedMonitor.AddFollowerMonitor (binLogMonitor, MonitorAction.WriteLog);
+			aggregatedMonitor.AddFollowerMonitor (binLogMonitor, binLogMonitor.Actions);
 
 			return aggregatedMonitor;
 		}

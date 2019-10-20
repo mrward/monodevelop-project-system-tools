@@ -71,7 +71,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 			buildTarget.GenerateLogFileName ();
 
 			progressMonitor = new MSBuildTargetProgressMonitor (buildTarget.LogFileName);
-			aggregatedMonitor.AddFollowerMonitor (progressMonitor);
+			aggregatedMonitor.AddFollowerMonitor (progressMonitor, progressMonitor.Actions);
 
 			return aggregatedMonitor;
 		}

@@ -25,12 +25,17 @@
 // THE SOFTWARE.
 
 using MonoDevelop.Core;
+using MonoDevelop.Core.ProgressMonitoring;
 using MonoDevelop.Projects;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
 	class MSBuildBinLogProgressMonitor : ProgressMonitor
 	{
+		public MonitorAction Actions {
+			get { return MonitorAction.WriteLog; }
+		}
+
 		protected override void OnWriteLogObject (object logObject)
 		{
 			var buildSessionStarted = logObject as BuildSessionStartedEvent;
