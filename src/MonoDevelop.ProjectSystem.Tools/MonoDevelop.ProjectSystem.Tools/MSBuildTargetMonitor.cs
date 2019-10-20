@@ -58,7 +58,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 			buildTarget.StartTime = DateTime.UtcNow;
 			stopwatch = Stopwatch.StartNew ();
 
-			BuildLoggingService.OnTargetStarted (buildTarget);
+			ProjectSystemService.OnTargetStarted (buildTarget);
 		}
 
 		public ProgressMonitor GetProgressMonitor (ProgressMonitor monitor)
@@ -91,9 +91,9 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 			buildTarget.Status = result.GetMSBuildTargetStatus ();
 			buildTarget.Duration = stopwatch.Elapsed;
-			buildTarget.BuildSessionBinLogFileName = BuildLoggingService.BuildSessionBinLogFileName;
+			buildTarget.BuildSessionBinLogFileName = ProjectSystemService.BuildSessionBinLogFileName;
 
-			BuildLoggingService.OnTargetFinished (buildTarget);
+			ProjectSystemService.OnTargetFinished (buildTarget);
 		}
 
 		public void OnException (Exception ex)
@@ -104,9 +104,9 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 			buildTarget.Duration = stopwatch.Elapsed;
 			buildTarget.Status = MSBuildTargetStatus.Exception;
-			buildTarget.BuildSessionBinLogFileName = BuildLoggingService.BuildSessionBinLogFileName;
+			buildTarget.BuildSessionBinLogFileName = ProjectSystemService.BuildSessionBinLogFileName;
 
-			BuildLoggingService.OnTargetFinished (buildTarget);
+			ProjectSystemService.OnTargetFinished (buildTarget);
 		}
 	}
 }

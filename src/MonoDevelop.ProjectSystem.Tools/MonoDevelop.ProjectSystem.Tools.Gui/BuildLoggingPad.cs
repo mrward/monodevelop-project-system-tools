@@ -57,8 +57,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			stopButton.Clicked -= OnStopButtonClicked;
 			clearButton.Clicked -= OnClearButtonClicked;
 
-			BuildLoggingService.MSBuildTargetStarted -= MSBuildTargetStarted;
-			BuildLoggingService.MSBuildTargetFinished -= MSBuildTargetFinished;
+			ProjectSystemService.MSBuildTargetStarted -= MSBuildTargetStarted;
+			ProjectSystemService.MSBuildTargetFinished -= MSBuildTargetFinished;
 
 			widget.Dispose ();
 
@@ -87,20 +87,20 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 			toolbar.ShowAll ();
 
-			BuildLoggingService.MSBuildTargetStarted += MSBuildTargetStarted;
-			BuildLoggingService.MSBuildTargetFinished += MSBuildTargetFinished;
+			ProjectSystemService.MSBuildTargetStarted += MSBuildTargetStarted;
+			ProjectSystemService.MSBuildTargetFinished += MSBuildTargetFinished;
 		}
 
 		void OnStartButtonClicked (object sender, EventArgs e)
 		{
-			BuildLoggingService.IsEnabled = true;
+			ProjectSystemService.IsEnabled = true;
 			startButton.Sensitive = false;
 			stopButton.Sensitive = true;
 		}
 
 		void OnStopButtonClicked (object sender, EventArgs e)
 		{
-			BuildLoggingService.IsEnabled = false;
+			ProjectSystemService.IsEnabled = false;
 			startButton.Sensitive = true;
 			stopButton.Sensitive = false;
 		}

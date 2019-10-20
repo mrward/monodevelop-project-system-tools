@@ -38,7 +38,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 			ConfigurationSelector configuration,
 			TargetEvaluationContext context)
 		{
-			if (BuildLoggingService.IsEnabled) {
+			if (ProjectSystemService.IsEnabled) {
 				return OnMonitorRunTarget (monitor, target, configuration, context);
 			}
 			return base.OnRunTarget (monitor, target, configuration, context);

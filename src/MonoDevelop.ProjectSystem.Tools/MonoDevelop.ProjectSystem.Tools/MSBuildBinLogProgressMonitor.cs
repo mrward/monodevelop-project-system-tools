@@ -35,7 +35,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 		{
 			var buildSessionStarted = logObject as BuildSessionStartedEvent;
 			if (buildSessionStarted != null) {
-				BuildLoggingService.BuildSessionBinLogFileName = buildSessionStarted.LogFile;
+				ProjectSystemService.BuildSessionBinLogFileName = buildSessionStarted.LogFile;
 			}
 		}
 	}

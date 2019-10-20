@@ -38,7 +38,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 			ConfigurationSelector configuration,
 			OperationContext operationContext)
 		{
-			if (BuildLoggingService.IsEnabled) {
+			if (ProjectSystemService.IsEnabled) {
 				monitor = AddMSBuildBinLogProgressMonitor (monitor);
 			}
 			return base.OnBeginBuildOperation (monitor, configuration, operationContext);
@@ -65,8 +65,8 @@ namespace MonoDevelop.ProjectSystem.Tools
 			OperationContext operationContext,
 			BuildResult result)
 		{
-			if (BuildLoggingService.IsEnabled) {
-				BuildLoggingService.BuildSessionBinLogFileName = FilePath.Null;
+			if (ProjectSystemService.IsEnabled) {
+				ProjectSystemService.BuildSessionBinLogFileName = FilePath.Null;
 			}
 			return base.OnEndBuildOperation (monitor, configuration, operationContext, result);
 		}

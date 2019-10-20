@@ -1,5 +1,5 @@
 ﻿//
-// BuildLoggingService.cs
+// ProjectSystemToolsService.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -29,7 +29,7 @@ using MonoDevelop.Core;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
-	static class BuildLoggingService
+	static class ProjectSystemService
 	{
 		public static bool IsEnabled { get; set; }
 

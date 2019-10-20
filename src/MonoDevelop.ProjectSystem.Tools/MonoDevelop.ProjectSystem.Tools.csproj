@@ -39,7 +39,7 @@
     </Compile>
     <Compile Include="Properties\AddinInfo.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildLoggingProjectExtension.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildLoggingService.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\ProjectSystemService.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetMonitor.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BuildLoggingPad.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BuildLoggingWidget.cs" />
