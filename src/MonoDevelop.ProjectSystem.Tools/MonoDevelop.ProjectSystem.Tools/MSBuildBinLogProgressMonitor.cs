@@ -1,5 +1,5 @@
 ﻿//
-// BuildLoggingService.cs
+// MSBuildBinLogProgressMonitor.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,32 +24,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using MonoDevelop.Core;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
-	static class BuildLoggingService
+	class MSBuildBinLogProgressMonitor : ProgressMonitor
 	{
-		public static bool IsEnabled { get; set; }
-
-		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetStarted;
-		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetFinished;
-
-		internal static void OnTargetStarted (MSBuildTarget target)
+		protected override void OnWriteLogObject (object logObject)
 		{
-			Runtime.RunInMainThread (() => {
-				MSBuildTargetStarted?.Invoke (null, new MSBuildTargetEventArgs (target));
-			}).Ignore ();
+			var buildSessionStarted = logObject as BuildSessionStartedEvent;
+			if (buildSessionStarted != null) {
+				BuildLoggingService.BuildSessionBinLogFileName = buildSessionStarted.LogFile;
+			}
 		}
-
-		internal static void OnTargetFinished (MSBuildTarget target)
-		{
-			Runtime.RunInMainThread (() => {
-				MSBuildTargetFinished?.Invoke (null, new MSBuildTargetEventArgs (target));
-			}).Ignore ();
-		}
-
-		internal static FilePath BuildSessionBinLogFileName { get; set; }
 	}
 }

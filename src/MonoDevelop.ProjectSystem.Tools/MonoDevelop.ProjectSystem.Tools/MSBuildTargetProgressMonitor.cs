@@ -32,8 +32,8 @@ namespace MonoDevelop.ProjectSystem.Tools
 {
 	class MSBuildTargetProgressMonitor : ProgressMonitor
 	{
-		FilePath logFileName;
-		StringBuilder logBuilder = StringBuilderCache.Allocate ();
+		readonly StringBuilder logBuilder = StringBuilderCache.Allocate ();
+		readonly FilePath logFileName;
 		bool disposed;
 
 		public MSBuildTargetProgressMonitor (FilePath logFileName)
@@ -53,10 +53,6 @@ namespace MonoDevelop.ProjectSystem.Tools
 			lock (logBuilder) {
 				logBuilder.Append (message);
 			}
-		}
-
-		protected override void OnWriteLogObject (object logObject)
-		{
 		}
 
 		protected override void OnDispose (bool disposing)

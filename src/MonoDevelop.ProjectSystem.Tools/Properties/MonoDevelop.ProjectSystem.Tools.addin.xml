@@ -5,6 +5,7 @@
 
 	<Extension path="/MonoDevelop/ProjectModel/ProjectModelExtensions">
 		<Class class="MonoDevelop.ProjectSystem.Tools.BuildLoggingProjectExtension" />
+		<Class class="MonoDevelop.ProjectSystem.Tools.BuildLoggingSolutionExtension" />
 	</Extension>
 
 	<Extension path="/MonoDevelop/Ide/Commands">
@@ -13,6 +14,10 @@
 				id="MonoDevelop.ProjectSystem.Tools.BuildLoggingCommands.OpenLogFile"
 				_description="Opens the MSBuild log file"
 				_label="_Open Log File" />
+			<Command
+				id="MonoDevelop.ProjectSystem.Tools.BuildLoggingCommands.OpenBinLogFile"
+				_description="Opens the MSBuild binlog file"
+				_label="Open _Binary Log File" />
 		</Category>
 	</Extension>
 
@@ -33,5 +38,6 @@
 
 	<Extension path="/MonoDevelop/BuildLoggingPad/ContextMenu">
 		<CommandItem id="MonoDevelop.ProjectSystem.Tools.BuildLoggingCommands.OpenLogFile" />
+		<CommandItem id="MonoDevelop.ProjectSystem.Tools.BuildLoggingCommands.OpenBinLogFile" />
 	</Extension>
 </ExtensionModel>

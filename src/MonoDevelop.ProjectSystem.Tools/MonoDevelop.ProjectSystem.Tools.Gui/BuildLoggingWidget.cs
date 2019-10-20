@@ -118,8 +118,13 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			for (int row = 0; row < listStore.RowCount; ++row) {
 				try {
 					target = listStore.GetValue (row, msbuildTargetDataField);
+
 					if (target.LogFileName.IsNotNull) {
 						File.Delete (target.LogFileName);
+					}
+
+					if (target.BinLogFileName.IsNotNull) {
+						File.Delete (target.BinLogFileName);
 					}
 				} catch (Exception ex) {
 					LoggingService.LogError (
@@ -134,7 +139,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			OpenLogFileForRow (e.RowIndex);
 		}
 
-		void OpenLogFileForRow (int row)
+		void OpenLogFileForRow (int row, bool binLog = false)
 		{
 			if (row < 0) {
 				return;
@@ -145,8 +150,15 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				return;
 			}
 
-			if (target.LogFileName.IsNotNull && File.Exists (target.LogFileName)) {
-				IdeApp.Workbench.OpenDocument (target.LogFileName, (Project)null)
+			FilePath fileNameToOpen = target.LogFileName;
+
+			if (binLog) {
+				target.CopyBinLogFile ();
+				fileNameToOpen = target.BinLogFileName;
+			}
+
+			if (fileNameToOpen.IsNotNull && File.Exists (fileNameToOpen)) {
+				IdeApp.Workbench.OpenDocument (fileNameToOpen, (Project)null)
 					.Ignore ();
 			}
 		}
@@ -172,6 +184,20 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		{
 			if (IsMSBuildTargetSelected ()) {
 				OpenLogFileForRow (listView.SelectedRow);
+			}
+		}
+
+		[CommandUpdateHandler (BuildLoggingCommands.OpenBinLogFile)]
+		void OnUpdateOpenBinLogFile (CommandInfo info)
+		{
+			info.Enabled = IsMSBuildTargetSelected ();
+		}
+
+		[CommandHandler (BuildLoggingCommands.OpenBinLogFile)]
+		void OpenBinLogFile ()
+		{
+			if (IsMSBuildTargetSelected ()) {
+				OpenLogFileForRow (listView.SelectedRow, binLog: true);
 			}
 		}
 

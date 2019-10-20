@@ -54,6 +54,8 @@
     <Compile Include="MonoDevelop.ProjectSystem.Tools\TargetEvaluationResultExtensions.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetProgressMonitor.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildLoggingCommands.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildLoggingSolutionExtension.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildBinLogProgressMonitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.ProjectSystem.Tools.addin.xml">

@@ -46,6 +46,9 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		public FilePath LogFileName { get; private set; }
 
+		public FilePath BuildSessionBinLogFileName { get; set; }
+		public FilePath BinLogFileName { get; private set; }
+
 		public static string GetBuildType (string target)
 		{
 			if (string.IsNullOrEmpty (target)) {
@@ -63,17 +66,20 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		public void GenerateLogFileName ()
 		{
-			LogFileName = Path.Combine (Path.GetTempPath (), GetLogFileNameWithoutPath ());
+			string fileNameWithoutFileExtension = Path.Combine (Path.GetTempPath (), GetLogFileNamePrefix ());
+
+			LogFileName = fileNameWithoutFileExtension + ".msbuild.log";
+			BinLogFileName = fileNameWithoutFileExtension + ".binlog";
 		}
 
 		/// <summary>
 		/// Get a unique log file name. Based on:
 		/// https://github.com/dotnet/project-system-tools/blob/7eb2f653890c159f750781de56bc7d261e7f4255/src/ProjectSystemTools/BuildLogging/Model/LoggerBase.cs#L22
 		/// </summary>
-		string GetLogFileNameWithoutPath ()
+		string GetLogFileNamePrefix ()
 		{
 			string fileName = string.Format (
-				"{0}_{1}{2}_{3}.msbuild.log",
+				"{0}_{1}{2}_{3}",
 				ProjectName,
 				GetDimensionLogFileNamePart (),
 				BuildType,
@@ -89,6 +95,23 @@ namespace MonoDevelop.ProjectSystem.Tools
 			}
 
 			return Dimensions.Replace ('|', '_') + "_";
+		}
+
+		public void CopyBinLogFile ()
+		{
+			if (BuildSessionBinLogFileName.IsNull) {
+				return;
+			}
+
+			try {
+				File.Copy (BuildSessionBinLogFileName, BinLogFileName);
+			} catch (Exception ex) {
+				LoggingService.LogError (
+					string.Format ("Unable to copy bin log file {0}", BuildSessionBinLogFileName),
+					ex);
+			}
+
+			BuildSessionBinLogFileName = FilePath.Null;
 		}
 	}
 }

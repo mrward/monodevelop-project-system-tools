@@ -28,6 +28,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 {
 	enum BuildLoggingCommands
 	{
-		OpenLogFile
+		OpenLogFile,
+		OpenBinLogFile
 	}
 }
