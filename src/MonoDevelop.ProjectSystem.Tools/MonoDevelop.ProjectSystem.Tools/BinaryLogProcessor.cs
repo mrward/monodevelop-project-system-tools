@@ -1,5 +1,5 @@
 ﻿//
-// MSBuildBinLogProgressMonitor.cs
+// BinaryLogProcessor.cs
 //
 // Author:
 //       Matt Ward <matt.ward@microsoft.com>
@@ -24,26 +24,54 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Logging;
 using MonoDevelop.Core;
-using MonoDevelop.Core.ProgressMonitoring;
-using MonoDevelop.Projects;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
-	class MSBuildBinLogProgressMonitor : ProgressMonitor
+	class BinaryLogProcessor : IDisposable
 	{
-		public MonitorAction Actions {
-			get { return MonitorAction.WriteLog; }
+		readonly FilePath binLogFileName;
+		readonly BinaryLogReplayEventSource replayEventSource = new BinaryLogReplayEventSource ();
+		readonly HashSet<FilePath> projectFileNames = new HashSet<FilePath> ();
+
+		public BinaryLogProcessor (FilePath binLogFileName)
+		{
+			this.binLogFileName = binLogFileName;
+
+			replayEventSource.ProjectStarted += ProjectStarted;
 		}
 
-		protected override void OnWriteLogObject (object logObject)
+		public IEnumerable<FilePath> ProjectFileNames {
+			get { return projectFileNames; }
+		}
+
+		public void Dispose ()
 		{
-			var buildSessionStarted = logObject as BuildSessionStartedEvent;
-			var buildSessionFinished = logObject as BuildSessionFinishedEvent;
-			if (buildSessionStarted != null) {
-				ProjectSystemService.OnBuildSessionStarted (buildSessionStarted);
-			} else if (buildSessionFinished != null) {
-				ProjectSystemService.OnBuildSessionFinished (buildSessionFinished);
+			replayEventSource.ProjectStarted -= ProjectStarted;
+		}
+
+		public void Process ()
+		{
+			replayEventSource.Replay (binLogFileName);
+		}
+
+		void ProjectStarted (object sender, ProjectStartedEventArgs e)
+		{
+			if (e.Properties == null) {
+				return;
+			}
+
+			foreach (DictionaryEntry entry in e.Properties) {
+				var key = entry.Key as string;
+				if (key == "MSBuildProjectFullPath") {
+					var fileName = new FilePath ((string)entry.Value);
+					projectFileNames.Add (fileName);
+				}
 			}
 		}
 	}

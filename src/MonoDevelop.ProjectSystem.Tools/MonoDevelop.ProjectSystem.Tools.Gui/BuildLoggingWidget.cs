@@ -59,7 +59,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				row,
 
 				projectDataField,
-				target.ProjectFileName,
+				target.ProjectFileName.FileName,
 
 				dimensionsDataField,
 				target.Dimensions,

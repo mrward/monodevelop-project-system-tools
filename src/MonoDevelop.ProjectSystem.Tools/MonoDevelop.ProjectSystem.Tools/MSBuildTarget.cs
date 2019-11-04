@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using MonoDevelop.Core;
 using MonoDevelop.Projects;
@@ -33,9 +34,11 @@ namespace MonoDevelop.ProjectSystem.Tools
 {
 	class MSBuildTarget
 	{
+		bool copiedBinLogFile;
+
 		public string Targets { get; set; }
 		public string ProjectName { get; set; }
-		public string ProjectFileName { get; set; }
+		public FilePath ProjectFileName { get; set; }
 		public string BuildType { get; set; }
 		public string Dimensions { get; set; }
 
@@ -48,6 +51,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		public FilePath BuildSessionBinLogFileName { get; set; }
 		public FilePath BinLogFileName { get; private set; }
+		public List<BuildSession> BuildSessions { get; set; }
 
 		public static string GetBuildType (string target)
 		{
@@ -99,6 +103,12 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		public void CopyBinLogFile ()
 		{
+			if (copiedBinLogFile) {
+				return;
+			}
+
+			UpdateBuildSessionBinLogFileName ();
+
 			if (BuildSessionBinLogFileName.IsNull) {
 				return;
 			}
@@ -111,7 +121,16 @@ namespace MonoDevelop.ProjectSystem.Tools
 					ex);
 			}
 
-			BuildSessionBinLogFileName = FilePath.Null;
+			copiedBinLogFile = true;
+		}
+
+		void UpdateBuildSessionBinLogFileName ()
+		{
+			foreach (BuildSession buildSession in BuildSessions) {
+				if (buildSession.ProjectFileNames.Contains (ProjectFileName)) {
+					BuildSessionBinLogFileName = buildSession.BinLogFileName;
+				}
+			}
 		}
 	}
 }

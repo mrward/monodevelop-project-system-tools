@@ -58,17 +58,5 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 			return aggregatedMonitor;
 		}
-
-		protected override Task OnEndBuildOperation (
-			ProgressMonitor monitor,
-			ConfigurationSelector configuration,
-			OperationContext operationContext,
-			BuildResult result)
-		{
-			if (ProjectSystemService.IsEnabled) {
-				ProjectSystemService.BuildSessionBinLogFileName = FilePath.Null;
-			}
-			return base.OnEndBuildOperation (monitor, configuration, operationContext, result);
-		}
 	}
 }

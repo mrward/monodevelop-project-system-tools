@@ -25,7 +25,11 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using MonoDevelop.Core;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
@@ -36,6 +40,9 @@ namespace MonoDevelop.ProjectSystem.Tools
 		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetStarted;
 		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetFinished;
 
+		static readonly Dictionary<int, BuildSession> runningBuildSessions =
+			new Dictionary<int, BuildSession> ();
+
 		internal static void OnTargetStarted (MSBuildTarget target)
 		{
 			Runtime.RunInMainThread (() => {
@@ -45,11 +52,45 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		internal static void OnTargetFinished (MSBuildTarget target)
 		{
+			target.BuildSessions = GetBuildSessions (running: true);
+
 			Runtime.RunInMainThread (() => {
 				MSBuildTargetFinished?.Invoke (null, new MSBuildTargetEventArgs (target));
 			}).Ignore ();
 		}
 
-		internal static FilePath BuildSessionBinLogFileName { get; set; }
+		internal static void OnBuildSessionStarted (BuildSessionStartedEvent buildSessionStarted)
+		{
+			lock (runningBuildSessions) {
+				var buildSession = new BuildSession (buildSessionStarted);
+				runningBuildSessions [buildSession.Id] = buildSession;
+			}
+		}
+
+		internal static void OnBuildSessionFinished (BuildSessionFinishedEvent buildSessionFinished)
+		{
+			lock (runningBuildSessions) {
+				if (runningBuildSessions.TryGetValue (buildSessionFinished.SessionId, out BuildSession buildSession)) {
+					buildSession.IsRunning = false;
+					buildSession.ProcessBuildSessionAsync ()
+						.Ignore ();
+				}
+			}
+		}
+
+		static List<BuildSession> GetBuildSessions (bool running)
+		{
+			var buildSessions = new List<BuildSession> ();
+
+			lock (runningBuildSessions) {
+				foreach (BuildSession buildSession in runningBuildSessions.Values) {
+					if (buildSession.IsRunning == running) {
+						buildSessions.Add (buildSession);
+					}
+				}
+			}
+
+			return buildSessions;
+		}
 	}
 }
