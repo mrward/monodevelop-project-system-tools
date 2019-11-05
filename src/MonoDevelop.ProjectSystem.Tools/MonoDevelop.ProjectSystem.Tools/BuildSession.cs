@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MonoDevelop.Core;
@@ -55,6 +56,10 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		public Task ProcessBuildSessionAsync ()
 		{
+			if (!BackupBinLogFile ()) {
+				return Task.CompletedTask;;
+			}
+
 			if (Runtime.IsMainThread) {
 				return Task.Run (() => ProcessBuildSessionAsync ());
 			}
@@ -69,6 +74,24 @@ namespace MonoDevelop.ProjectSystem.Tools
 			}
 
 			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Need to make a copy of the binlog since the built-in binlog viewer will delete the file.
+		/// </summary>
+		bool BackupBinLogFile ()
+		{
+			try {
+				FilePath newBinLogFileName = BinLogFileName.ChangeName (BinLogFileName.FileNameWithoutExtension + "-copy");
+				File.Copy (BinLogFileName, newBinLogFileName);
+				BinLogFileName = newBinLogFileName;
+
+				return true;
+			} catch (Exception ex) {
+				LoggingService.LogError (string.Format ("Unable to copy binlog file '{0}'", BinLogFileName), ex);
+			}
+
+			return false;
 		}
 	}
 }
