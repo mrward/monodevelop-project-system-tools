@@ -89,7 +89,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 						row,
 
 						elapsedDataField,
-						target.Duration.ToString ("g"),
+						target.Duration.TotalSeconds.ToString ("N3"),
 
 						statusDataField,
 						target.Status.GetDisplayText ());
