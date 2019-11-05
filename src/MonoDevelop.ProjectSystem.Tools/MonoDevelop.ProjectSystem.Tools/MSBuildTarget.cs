@@ -126,6 +126,10 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		void UpdateBuildSessionBinLogFileName ()
 		{
+			if (BuildSessions == null) {
+				return;
+			}
+
 			foreach (BuildSession buildSession in BuildSessions) {
 				if (buildSession.ProjectFileNames.Contains (ProjectFileName)) {
 					BuildSessionBinLogFileName = buildSession.BinLogFileName;
