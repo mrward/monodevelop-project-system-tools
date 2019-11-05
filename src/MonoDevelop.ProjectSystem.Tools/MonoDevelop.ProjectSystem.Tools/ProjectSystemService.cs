@@ -52,7 +52,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		internal static void OnTargetFinished (MSBuildTarget target)
 		{
-			target.BuildSessions = GetBuildSessions (running: true);
+			target.BuildSessions = GetBuildSessions ();
 
 			Runtime.RunInMainThread (() => {
 				MSBuildTargetFinished?.Invoke (null, new MSBuildTargetEventArgs (target));
@@ -71,6 +71,8 @@ namespace MonoDevelop.ProjectSystem.Tools
 		{
 			lock (runningBuildSessions) {
 				if (runningBuildSessions.TryGetValue (buildSessionFinished.SessionId, out BuildSession buildSession)) {
+					runningBuildSessions.Remove (buildSessionFinished.SessionId);
+
 					buildSession.IsRunning = false;
 					buildSession.ProcessBuildSessionAsync ()
 						.Ignore ();
@@ -78,19 +80,11 @@ namespace MonoDevelop.ProjectSystem.Tools
 			}
 		}
 
-		static List<BuildSession> GetBuildSessions (bool running)
+		static List<BuildSession> GetBuildSessions ()
 		{
-			var buildSessions = new List<BuildSession> ();
-
 			lock (runningBuildSessions) {
-				foreach (BuildSession buildSession in runningBuildSessions.Values) {
-					if (buildSession.IsRunning == running) {
-						buildSessions.Add (buildSession);
-					}
-				}
+				return runningBuildSessions.Values.ToList ();
 			}
-
-			return buildSessions;
 		}
 	}
 }
