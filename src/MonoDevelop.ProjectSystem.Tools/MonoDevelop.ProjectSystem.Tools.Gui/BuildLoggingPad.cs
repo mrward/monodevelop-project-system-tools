@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using Gtk;
 using MonoDevelop.Components;
 using MonoDevelop.Components.Docking;
@@ -40,6 +41,13 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		Button startButton;
 		Button stopButton;
 		Button clearButton;
+		ComboBox buildTypeFilterComboBox;
+
+		BuildType[] buildTypes = new BuildType [] {
+			BuildType.All,
+			BuildType.Build,
+			BuildType.DesignTimeBuild
+		};
 
 		public override Control Control {
 			get {
@@ -85,6 +93,14 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			clearButton.TooltipText = GettextCatalog.GetString ("Clear");
 			toolbar.Add (clearButton);
 
+			string[] buildTypeItems = buildTypes
+				.Select (buildType => GetDisplayText (buildType))
+				.ToArray ();
+			buildTypeFilterComboBox = new ComboBox (buildTypeItems);
+			buildTypeFilterComboBox.Active = 0;
+			buildTypeFilterComboBox.Changed += BuildTypeFilterComboBoxChanged;
+			toolbar.Add (buildTypeFilterComboBox);
+
 			toolbar.ShowAll ();
 
 			ProjectSystemService.MSBuildTargetStarted += MSBuildTargetStarted;
@@ -122,6 +138,25 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			Runtime.AssertMainThread ();
 
 			widget.UpdateMSBuildTarget (e.BuildTarget);
+		}
+
+		static string GetDisplayText (BuildType buildType)
+		{
+			switch (buildType) {
+				case BuildType.All:
+					return GettextCatalog.GetString ("All");
+				case BuildType.Build:
+					return GettextCatalog.GetString ("Builds");
+				case BuildType.DesignTimeBuild:
+					return GettextCatalog.GetString ("Design-time Builds");
+				default:
+					return buildType.ToString ();
+			}
+		}
+
+		void BuildTypeFilterComboBoxChanged (object sender, EventArgs e)
+		{
+			widget.BuildType = buildTypes [buildTypeFilterComboBox.Active];
 		}
 	}
 }

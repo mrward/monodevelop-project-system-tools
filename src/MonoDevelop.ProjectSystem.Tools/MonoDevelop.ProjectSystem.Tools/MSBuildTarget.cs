@@ -39,7 +39,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 		public string Targets { get; set; }
 		public string ProjectName { get; set; }
 		public FilePath ProjectFileName { get; set; }
-		public string BuildType { get; set; }
+		public BuildType BuildType { get; set; }
 		public string Dimensions { get; set; }
 
 		public DateTime StartTime { get; set; }
@@ -53,19 +53,19 @@ namespace MonoDevelop.ProjectSystem.Tools
 		public FilePath BinLogFileName { get; private set; }
 		public List<BuildSession> BuildSessions { get; set; }
 
-		public static string GetBuildType (string target)
+		public static BuildType GetBuildType (string target)
 		{
 			if (string.IsNullOrEmpty (target)) {
-				return string.Empty;
+				return BuildType.None;
 			}
 
 			if (target == ProjectService.BuildTarget ||
 				target == ProjectService.CleanTarget ||
 				target == "Pack") {
-				return "Build";
+				return BuildType.Build;
 			}
 
-			return "DesignTimeBuild";
+			return BuildType.DesignTimeBuild;
 		}
 
 		public void GenerateLogFileName ()

@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using MonoDevelop.Components;
 using MonoDevelop.Components.Commands;
@@ -37,6 +38,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 {
 	partial class BuildLoggingWidget
 	{
+		BuildType buildType = BuildType.All;
+		List<MSBuildTarget> msbuildTargets = new List<MSBuildTarget> ();
+
 		public BuildLoggingWidget ()
 		{
 			Build ();
@@ -48,10 +52,30 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		public void ClearItems ()
 		{
 			DeleteMSBuildOutputFiles ();
+
+			msbuildTargets.Clear ();
 			listStore.Clear ();
 		}
 
 		public void AddMSBuildTarget (MSBuildTarget target)
+		{
+			msbuildTargets.Add (target);
+
+			if (IsAllowedByFilter (target)) {
+				AddMSBuildTargetToListView (target);
+			}
+		}
+
+		bool IsAllowedByFilter (MSBuildTarget target)
+		{
+			if (buildType == BuildType.All) {
+				return true;
+			}
+
+			return buildType == target.BuildType;
+		}
+
+		void AddMSBuildTargetToListView (MSBuildTarget target)
 		{
 			int row = listStore.AddRow ();
 
@@ -68,7 +92,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				target.Targets,
 
 				typeDataField,
-				target.BuildType,
+				target.BuildType.ToString (),
 
 				startDataField,
 				target.StartTime.ToString ("s"),
@@ -229,6 +253,25 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		bool IsMSBuildTargetSelected ()
 		{
 			return listView.SelectedRow >= 0;
+		}
+
+		public BuildType BuildType {
+			get { return buildType; }
+			set {
+				buildType = value;
+				ApplyFilter ();
+			}
+		}
+
+		void ApplyFilter ()
+		{
+			listStore.Clear ();
+
+			foreach (MSBuildTarget target in msbuildTargets) {
+				if (IsAllowedByFilter (target)) {
+					AddMSBuildTargetToListView (target);
+				}
+			}
 		}
 	}
 }
