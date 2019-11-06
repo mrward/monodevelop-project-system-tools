@@ -43,7 +43,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 		public string Dimensions { get; set; }
 
 		public DateTime StartTime { get; set; }
-		public TimeSpan Duration { get; set; }
+		public TimeSpan? Duration { get; set; }
 
 		public MSBuildTargetStatus Status { get; set; }
 

@@ -39,6 +39,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 	partial class BuildLoggingWidget
 	{
 		BuildType buildType = BuildType.All;
+		string searchFilter = string.Empty;
 		List<MSBuildTarget> msbuildTargets = new List<MSBuildTarget> ();
 
 		public BuildLoggingWidget ()
@@ -68,11 +69,12 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		bool IsAllowedByFilter (MSBuildTarget target)
 		{
-			if (buildType == BuildType.All) {
-				return true;
+			if (buildType != BuildType.All &&
+				buildType != target.BuildType) {
+				return false;
 			}
 
-			return buildType == target.BuildType;
+			return IsAllowedBySearchFilter (target);
 		}
 
 		void AddMSBuildTargetToListView (MSBuildTarget target)
@@ -88,6 +90,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				dimensionsDataField,
 				target.Dimensions,
 
+				elapsedDataField,
+				GetDisplayText (target.Duration),
+
 				targetsDataField,
 				target.Targets,
 
@@ -95,13 +100,27 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				target.BuildType.ToString (),
 
 				startDataField,
-				target.StartTime.ToString ("s"),
+				GetDisplayText (target.StartTime),
 
 				statusDataField,
 				target.Status.GetDisplayText (),
 
 				msbuildTargetDataField,
 				target);
+		}
+
+		static string GetDisplayText (TimeSpan? duration)
+		{
+			if (!duration.HasValue) {
+				return string.Empty;
+			}
+
+			return duration.Value.TotalSeconds.ToString ("N3");
+		}
+
+		static string GetDisplayText (DateTime time)
+		{
+			return time.ToString ("s");
 		}
 
 		public void UpdateMSBuildTarget (MSBuildTarget target)
@@ -113,7 +132,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 						row,
 
 						elapsedDataField,
-						target.Duration.TotalSeconds.ToString ("N3"),
+						GetDisplayText (target.Duration),
 
 						statusDataField,
 						target.Status.GetDisplayText ());
@@ -263,6 +282,14 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			}
 		}
 
+		public string SearchFilter {
+			get { return searchFilter; }
+			set {
+				searchFilter = value;
+				ApplyFilter ();
+			}
+		}
+
 		void ApplyFilter ()
 		{
 			listStore.Clear ();
@@ -272,6 +299,32 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 					AddMSBuildTargetToListView (target);
 				}
 			}
+		}
+
+		bool IsAllowedBySearchFilter (MSBuildTarget target)
+		{
+			if (string.IsNullOrEmpty (searchFilter)) {
+				return true;
+			}
+
+			return
+				IsSearchFilterMatch (target.BuildType.ToString ()) ||
+				IsSearchFilterMatch (target.Dimensions) ||
+				IsSearchFilterMatch (target.ProjectFileName.FileName) ||
+				IsSearchFilterMatch (target.ProjectName) ||
+				IsSearchFilterMatch (target.Status.GetDisplayText ()) ||
+				IsSearchFilterMatch (target.Targets) ||
+				IsSearchFilterMatch (GetDisplayText (target.Duration)) ||
+				IsSearchFilterMatch (GetDisplayText (target.StartTime));
+		}
+
+		bool IsSearchFilterMatch (string text)
+		{
+			if (string.IsNullOrEmpty (text)) {
+				return false;
+			}
+
+			return text.IndexOf (searchFilter, StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 	}
 }

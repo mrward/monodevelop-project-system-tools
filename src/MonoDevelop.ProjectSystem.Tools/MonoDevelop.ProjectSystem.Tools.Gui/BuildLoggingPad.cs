@@ -42,6 +42,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		Button stopButton;
 		Button clearButton;
 		ComboBox buildTypeFilterComboBox;
+		SearchEntry searchEntry;
+		TimeSpan searchDelayTimeSpan = TimeSpan.FromMilliseconds (250);
+		IDisposable searchTimer;
 
 		BuildType[] buildTypes = new BuildType [] {
 			BuildType.All,
@@ -61,12 +64,16 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		public override void Dispose ()
 		{
+			ProjectSystemService.MSBuildTargetStarted -= MSBuildTargetStarted;
+			ProjectSystemService.MSBuildTargetFinished -= MSBuildTargetFinished;
+
 			startButton.Clicked -= OnStartButtonClicked;
 			stopButton.Clicked -= OnStopButtonClicked;
 			clearButton.Clicked -= OnClearButtonClicked;
+			buildTypeFilterComboBox.Changed -= BuildTypeFilterComboBoxChanged;
+			searchEntry.Entry.Changed -= SearchEntryChanged;
 
-			ProjectSystemService.MSBuildTargetStarted -= MSBuildTargetStarted;
-			ProjectSystemService.MSBuildTargetFinished -= MSBuildTargetFinished;
+			DisposeExistingTimer ();
 
 			widget.Dispose ();
 
@@ -100,6 +107,15 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			buildTypeFilterComboBox.Active = 0;
 			buildTypeFilterComboBox.Changed += BuildTypeFilterComboBoxChanged;
 			toolbar.Add (buildTypeFilterComboBox);
+
+			var spacer = new HBox ();
+			toolbar.Add (spacer, true);
+
+			searchEntry = new SearchEntry ();
+			searchEntry.WidthRequest = 200;
+			searchEntry.Visible = true;
+			searchEntry.Entry.Changed += SearchEntryChanged;
+			toolbar.Add (searchEntry);
 
 			toolbar.ShowAll ();
 
@@ -157,6 +173,25 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		void BuildTypeFilterComboBoxChanged (object sender, EventArgs e)
 		{
 			widget.BuildType = buildTypes [buildTypeFilterComboBox.Active];
+		}
+
+		void SearchEntryChanged (object sender, EventArgs e)
+		{
+			DisposeExistingTimer ();
+			searchTimer = Xwt.Application.TimeoutInvoke (searchDelayTimeSpan, Search);
+		}
+
+		bool Search ()
+		{
+			widget.SearchFilter = searchEntry.Entry.Text;
+			return true;
+		}
+
+		void DisposeExistingTimer ()
+		{
+			if (searchTimer != null) {
+				searchTimer.Dispose ();
+			}
 		}
 	}
 }
