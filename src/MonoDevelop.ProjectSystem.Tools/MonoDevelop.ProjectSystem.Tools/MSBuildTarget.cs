@@ -114,6 +114,11 @@ namespace MonoDevelop.ProjectSystem.Tools
 			}
 
 			try {
+				if (File.Exists (BinLogFileName)) {
+					copiedBinLogFile = true;
+					return;
+				}
+
 				File.Copy (BuildSessionBinLogFileName, BinLogFileName);
 			} catch (Exception ex) {
 				LoggingService.LogError (
