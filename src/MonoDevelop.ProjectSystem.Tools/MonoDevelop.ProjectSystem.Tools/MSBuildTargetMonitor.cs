@@ -26,6 +26,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using MonoDevelop.Core;
 using MonoDevelop.Core.ProgressMonitoring;
 using MonoDevelop.Projects;
@@ -37,6 +38,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 		MSBuildTarget buildTarget;
 		Stopwatch stopwatch;
 		MSBuildTargetProgressMonitor progressMonitor;
+		TargetEvaluationContext context;
 
 		public MSBuildTargetMonitor (
 			Project project,
@@ -45,6 +47,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 			TargetEvaluationContext context)
 		{
 			// Ensure log verbosity is set for non-build targets.
+			this.context = context;
 			context.LogVerbosity = Runtime.Preferences.MSBuildVerbosity.Value;
 
 			buildTarget = new MSBuildTarget {
@@ -69,6 +72,9 @@ namespace MonoDevelop.ProjectSystem.Tools
 			}
 
 			buildTarget.GenerateLogFileName ();
+
+			// Generate a bin log file.
+			context.BinLogFilePath = buildTarget.BinLogFileName;
 
 			progressMonitor = new MSBuildTargetProgressMonitor (buildTarget.LogFileName);
 			aggregatedMonitor.AddFollowerMonitor (progressMonitor, progressMonitor.Actions);
