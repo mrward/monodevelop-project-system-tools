@@ -71,6 +71,8 @@
     <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildSession.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\BinaryLogProcessor.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildType.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessServiceMonitor.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessArguments.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.ProjectSystem.Tools.addin.xml">

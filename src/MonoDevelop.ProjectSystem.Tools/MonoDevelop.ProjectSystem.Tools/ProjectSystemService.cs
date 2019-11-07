@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using MonoDevelop.Core;
 using MonoDevelop.Projects;
 
@@ -35,13 +34,26 @@ namespace MonoDevelop.ProjectSystem.Tools
 {
 	static class ProjectSystemService
 	{
-		public static bool IsEnabled { get; set; }
+		static bool enabled;
+		static readonly Dictionary<int, BuildSession> runningBuildSessions =
+			new Dictionary<int, BuildSession> ();
+		static MSBuildProcessServiceMonitor msbuildProcessServiceMonitor;
+
+		public static bool IsEnabled {
+			get { return enabled; }
+			set {
+				enabled = value;
+
+				if (enabled) {
+					msbuildProcessServiceMonitor = new MSBuildProcessServiceMonitor ();
+				} else {
+					msbuildProcessServiceMonitor.Dispose ();
+				}
+			}
+		}
 
 		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetStarted;
 		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetFinished;
-
-		static readonly Dictionary<int, BuildSession> runningBuildSessions =
-			new Dictionary<int, BuildSession> ();
 
 		internal static void OnTargetStarted (MSBuildTarget target)
 		{
