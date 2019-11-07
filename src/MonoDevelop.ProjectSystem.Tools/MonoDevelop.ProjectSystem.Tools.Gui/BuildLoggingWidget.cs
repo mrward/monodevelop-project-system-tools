@@ -144,14 +144,13 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		protected override void Dispose (bool disposing)
 		{
-			base.Dispose (disposing);
-
 			if (disposing) {
 				listView.RowActivated -= ListViewRowActivated;
 				listView.ButtonPressed -= ListViewButtonPressed;
 
 				DeleteMSBuildOutputFiles ();
 			}
+			base.Dispose (disposing);
 		}
 
 		void DeleteMSBuildOutputFiles ()
