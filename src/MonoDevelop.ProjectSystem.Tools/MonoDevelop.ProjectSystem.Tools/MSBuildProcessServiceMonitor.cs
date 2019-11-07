@@ -30,6 +30,7 @@ using System.IO;
 using System.Threading;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Execution;
+using MonoDevelop.Ide;
 using MonoDevelop.Projects.MSBuild;
 
 namespace MonoDevelop.ProjectSystem.Tools
@@ -63,7 +64,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 				ProjectFileName = GettextCatalog.GetString ("Solution"),
 				Targets = msbuildProcessArguments.Targets,
 				BuildType = msbuildProcessArguments.BuildType,
-				Dimensions = string.Empty
+				Dimensions = GetDimensions (msbuildProcessArguments.Targets)
 			};
 
 			buildTarget.Start ();
@@ -89,6 +90,15 @@ namespace MonoDevelop.ProjectSystem.Tools
 			});
 
 			return process;
+		}
+
+		string GetDimensions (string targets)
+		{
+			if (StringComparer.OrdinalIgnoreCase.Equals ("GenerateRestoreGraphFile", targets)) {
+				return IdeApp.ProjectOperations.CurrentSelectedSolution.GetDimensions ();
+			}
+
+			return string.Empty;
 		}
 
 		void OnMSBuildProcessExited (int currentSessionId, ProcessWrapper process)
