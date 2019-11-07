@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using MonoDevelop.Core;
 using MonoDevelop.Projects;
@@ -34,6 +35,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 {
 	class MSBuildTarget
 	{
+		Stopwatch stopwatch;
 		bool copiedBinLogFile;
 
 		public string Targets { get; set; }
@@ -66,6 +68,14 @@ namespace MonoDevelop.ProjectSystem.Tools
 			}
 
 			return BuildType.DesignTimeBuild;
+		}
+
+		public void Start ()
+		{
+			StartTime = DateTime.UtcNow;
+			stopwatch = Stopwatch.StartNew ();
+
+			GenerateLogFileName ();
 		}
 
 		public void GenerateLogFileName ()
@@ -140,6 +150,23 @@ namespace MonoDevelop.ProjectSystem.Tools
 					BuildSessionBinLogFileName = buildSession.BinLogFileName;
 				}
 			}
+		}
+
+		public void OnResult (TargetEvaluationResult result)
+		{
+			OnResult (result.GetMSBuildTargetStatus ());
+		}
+
+		public void OnResult (MSBuildTargetStatus status)
+		{
+			stopwatch.Stop ();
+			Status = status;
+			Duration = stopwatch.Elapsed;
+		}
+
+		public void OnException (Exception ex)
+		{
+			OnResult (MSBuildTargetStatus.Exception);
 		}
 	}
 }
