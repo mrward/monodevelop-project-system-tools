@@ -78,6 +78,8 @@
     <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogSummaryViewBase.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogEvaluationSummaryView.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogBuildTreeView.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessServiceMonitor.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessArguments.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.ProjectSystem.Tools.addin.xml">

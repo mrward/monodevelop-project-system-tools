@@ -37,11 +37,21 @@ namespace MonoDevelop.ProjectSystem.Tools
 	{
 		static bool enabled;
 		static bool initializedMSBuildTaskLogging;
+		static readonly Dictionary<int, BuildSession> runningBuildSessions =
+			new Dictionary<int, BuildSession> ();
+		static MSBuildProcessServiceMonitor msbuildProcessServiceMonitor;
 
 		public static bool IsEnabled {
 			get { return enabled; }
 			set {
 				enabled = value;
+
+				if (enabled) {
+					msbuildProcessServiceMonitor = new MSBuildProcessServiceMonitor ();
+				} else {
+					msbuildProcessServiceMonitor.Dispose ();
+				}
+
 				if (enabled && !initializedMSBuildTaskLogging) {
 					InitializeMSBuildTaskLogging ();
 					initializedMSBuildTaskLogging = true;
@@ -69,9 +79,6 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetStarted;
 		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetFinished;
-
-		static readonly Dictionary<int, BuildSession> runningBuildSessions =
-			new Dictionary<int, BuildSession> ();
 
 		internal static void OnTargetStarted (MSBuildTarget target)
 		{
