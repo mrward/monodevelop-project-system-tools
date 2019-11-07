@@ -25,8 +25,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Diagnostics;
-using System.IO;
 using MonoDevelop.Core;
 using MonoDevelop.Core.ProgressMonitoring;
 using MonoDevelop.Projects;
@@ -36,7 +34,6 @@ namespace MonoDevelop.ProjectSystem.Tools
 	class MSBuildTargetMonitor : IDisposable
 	{
 		MSBuildTarget buildTarget;
-		Stopwatch stopwatch;
 		MSBuildTargetProgressMonitor progressMonitor;
 		TargetEvaluationContext context;
 
@@ -58,8 +55,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 				Dimensions = project.GetDimensions (configuration)
 			};
 
-			buildTarget.StartTime = DateTime.UtcNow;
-			stopwatch = Stopwatch.StartNew ();
+			buildTarget.Start ();
 
 			ProjectSystemService.OnTargetStarted (buildTarget);
 		}
@@ -70,8 +66,6 @@ namespace MonoDevelop.ProjectSystem.Tools
 			if (aggregatedMonitor == null) {
 				aggregatedMonitor = new AggregatedProgressMonitor (monitor);
 			}
-
-			buildTarget.GenerateLogFileName ();
 
 			// Generate a bin log file.
 			context.BinLogFilePath = buildTarget.BinLogFileName;
@@ -84,32 +78,18 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		public void Dispose ()
 		{
-			stopwatch.Stop ();
-
 			progressMonitor?.Dispose ();
 		}
 
 		public void OnResult (TargetEvaluationResult result)
 		{
-			stopwatch.Stop ();
-
-			progressMonitor?.Dispose ();
-
-			buildTarget.Status = result.GetMSBuildTargetStatus ();
-			buildTarget.Duration = stopwatch.Elapsed;
-
+			buildTarget.OnResult (result);
 			ProjectSystemService.OnTargetFinished (buildTarget);
 		}
 
 		public void OnException (Exception ex)
 		{
-			stopwatch.Stop ();
-
-			progressMonitor?.Dispose ();
-
-			buildTarget.Duration = stopwatch.Elapsed;
-			buildTarget.Status = MSBuildTargetStatus.Exception;
-
+			buildTarget.OnException (ex);
 			ProjectSystemService.OnTargetFinished (buildTarget);
 		}
 	}
