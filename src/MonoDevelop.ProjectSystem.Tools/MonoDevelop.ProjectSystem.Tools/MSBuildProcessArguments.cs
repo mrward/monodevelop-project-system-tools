@@ -24,8 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Text;
 using MonoDevelop.Core;
+using MonoDevelop.Projects.MSBuild;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
@@ -75,14 +77,38 @@ namespace MonoDevelop.ProjectSystem.Tools
 			targetsBuilder.Append (targets);
 		}
 
-		public string AddBinLogFileName (FilePath binLogFileName)
+		/// <summary>
+		/// Adding a verbosity parameter to the end overrides any existing verbosity parameters.
+		/// </summary>
+		public static string AddVerbosity (string arguments, MSBuildVerbosity verbosity)
+		{
+			return arguments + GetVerbosityArgument (verbosity);
+		}
+
+		static string GetVerbosityArgument (MSBuildVerbosity verbosity)
+		{
+			switch (verbosity) {
+				case MSBuildVerbosity.Detailed:
+					return " /v:d";
+				case MSBuildVerbosity.Diagnostic:
+					return " /v:diag";
+				case MSBuildVerbosity.Minimal:
+					return " /v:m";
+				case MSBuildVerbosity.Quiet:
+					return " /v:q";
+				default: // Normal
+					return " /v:n";
+			}
+		}
+
+		public static string AddBinLogFileName (string arguments, FilePath binLogFileName)
 		{
 			return arguments + GetQuotedBinLogArgument (binLogFileName);
 		}
 
-		string GetQuotedBinLogArgument (FilePath binLogFileName)
+		static string GetQuotedBinLogArgument (FilePath binLogFileName)
 		{
-			return " -bl:\"" + binLogFileName + "\"";
+			return " /bl:\"" + binLogFileName + "\"";
 		}
 	}
 }

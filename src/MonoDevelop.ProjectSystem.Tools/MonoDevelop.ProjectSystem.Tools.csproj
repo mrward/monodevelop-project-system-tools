@@ -74,6 +74,7 @@
     <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessServiceMonitor.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessArguments.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\SolutionExtensions.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessProgressMonitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.ProjectSystem.Tools.addin.xml">

@@ -69,7 +69,8 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 			buildTarget.Start ();
 
-			arguments = msbuildProcessArguments.AddBinLogFileName (buildTarget.BinLogFileName);
+			arguments = MSBuildProcessArguments.AddVerbosity (arguments, Runtime.Preferences.MSBuildVerbosity.Value);
+			arguments = MSBuildProcessArguments.AddBinLogFileName (arguments, buildTarget.BinLogFileName);
 
 			lock (buildTargets) {
 				buildTargets [currentSessionId] = buildTarget;
@@ -77,16 +78,20 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 			ProjectSystemService.OnTargetStarted (buildTarget);
 
+			var monitor = new MSBuildProcessProgressMonitor (outWriter, errorWriter, buildTarget.LogFileName);
+
 			ProcessWrapper process = Runtime.ProcessService.StartProcess (
 				command,
 				arguments,
 				workingDirectory,
-				outWriter,
-				errorWriter,
+				monitor.Log,
+				monitor.ErrorLog,
 				exited);
 
+			monitor.Process = process;
+
 			process.Task.ContinueWith (_ => {
-				OnMSBuildProcessExited (currentSessionId, process);
+				OnMSBuildProcessExited (currentSessionId, monitor);
 			});
 
 			return process;
@@ -101,25 +106,28 @@ namespace MonoDevelop.ProjectSystem.Tools
 			return string.Empty;
 		}
 
-		void OnMSBuildProcessExited (int currentSessionId, ProcessWrapper process)
+		void OnMSBuildProcessExited (int currentSessionId, MSBuildProcessProgressMonitor monitor)
 		{
 			MSBuildTarget buildTarget = null;
-			lock (buildTargets) {
-				if (buildTargets.TryGetValue (currentSessionId, out buildTarget)) {
-					buildTargets.Remove (currentSessionId);
-				} else {
-					return;
-				}
-			}
 
-			if (process.Task.IsFaulted) {
-				buildTarget.OnException (process.Task.Exception);
-			} else if (process.Task.IsCanceled) {
-				buildTarget.OnResult (MSBuildTargetStatus.Failed);
-			} else if (process.ProcessAsyncOperation.ExitCode == 0) {
-				buildTarget.OnResult (MSBuildTargetStatus.Finished);
-			} else {
-				buildTarget.OnResult (MSBuildTargetStatus.Failed);
+			using (monitor) {
+				lock (buildTargets) {
+					if (buildTargets.TryGetValue (currentSessionId, out buildTarget)) {
+						buildTargets.Remove (currentSessionId);
+					} else {
+						return;
+					}
+				}
+
+				if (monitor.Process.Task.IsFaulted) {
+					buildTarget.OnException (monitor.Process.Task.Exception);
+				} else if (monitor.Process.Task.IsCanceled) {
+					buildTarget.OnResult (MSBuildTargetStatus.Failed);
+				} else if (monitor.Process.ProcessAsyncOperation.ExitCode == 0) {
+					buildTarget.OnResult (MSBuildTargetStatus.Finished);
+				} else {
+					buildTarget.OnResult (MSBuildTargetStatus.Failed);
+				}
 			}
 
 			ProjectSystemService.OnTargetFinished (buildTarget);
