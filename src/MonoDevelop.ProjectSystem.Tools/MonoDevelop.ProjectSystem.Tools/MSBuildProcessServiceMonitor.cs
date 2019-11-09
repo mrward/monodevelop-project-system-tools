@@ -37,7 +37,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 {
 	class MSBuildProcessServiceMonitor : IDisposable
 	{
-		readonly Func<string, string, string, TextWriter, TextWriter, EventHandler, ProcessWrapper> originalHandler;
+		readonly MSBuildProcessService.StartProcessCallback originalHandler;
 		readonly Dictionary<int, MSBuildTarget> buildTargets = new Dictionary<int, MSBuildTarget> ();
 
 		static int sessionId;
