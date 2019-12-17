@@ -1,6 +1,8 @@
 ﻿<ExtensionModel>
 	<Runtime>
 		<Import assembly="MonoDevelop.ProjectSystem.Tools.dll" />
+		<Import file="Microsoft.VisualStudio.ProjectSystem.LogModel.dll" />
+		<Import file="Microsoft.VisualStudio.ProjectSystem.Tools.dll" />
 	</Runtime>
 
 	<Extension path="/MonoDevelop/ProjectModel/ProjectModelExtensions">
@@ -39,5 +41,11 @@
 	<Extension path="/MonoDevelop/BuildLoggingPad/ContextMenu">
 		<CommandItem id="MonoDevelop.ProjectSystem.Tools.BuildLoggingCommands.OpenLogFile" />
 		<CommandItem id="MonoDevelop.ProjectSystem.Tools.BuildLoggingCommands.OpenBinLogFile" />
+	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/DocumentControllerExtensions">
+		<Type
+			mimeType="*"
+			class="MonoDevelop.ProjectSystem.Tools.Gui.BinaryLogDocumentControllerExtension" />
 	</Extension>
 </ExtensionModel>

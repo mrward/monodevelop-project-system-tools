@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.ProjectSystem.Tools", "MonoDevelop.ProjectSystem.Tools\MonoDevelop.ProjectSystem.Tools.csproj", "{992972DC-DE0E-42BF-BB00-86B4512723BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.VisualStudio.ProjectSystem.LogModel", "Microsoft.VisualStudio.ProjectSystem.LogModel\Microsoft.VisualStudio.ProjectSystem.LogModel.csproj", "{03755881-A132-4CC3-9EC4-CD33192C4428}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.VisualStudio.ProjectSystem.Tools", "Microsoft.VisualStudio.ProjectSystem.Tools\Microsoft.VisualStudio.ProjectSystem.Tools.csproj", "{0E542C28-B9D6-4E2F-9C72-48063AB67007}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,5 +17,13 @@ Global
 		{992972DC-DE0E-42BF-BB00-86B4512723BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{992972DC-DE0E-42BF-BB00-86B4512723BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{992972DC-DE0E-42BF-BB00-86B4512723BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03755881-A132-4CC3-9EC4-CD33192C4428}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03755881-A132-4CC3-9EC4-CD33192C4428}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03755881-A132-4CC3-9EC4-CD33192C4428}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03755881-A132-4CC3-9EC4-CD33192C4428}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E542C28-B9D6-4E2F-9C72-48063AB67007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E542C28-B9D6-4E2F-9C72-48063AB67007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E542C28-B9D6-4E2F-9C72-48063AB67007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E542C28-B9D6-4E2F-9C72-48063AB67007}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

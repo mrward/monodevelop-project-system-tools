@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Common.Build.props" />
   <Import Project="MonoDevelop.References.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -71,11 +72,24 @@
     <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildSession.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\BinaryLogProcessor.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildType.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogDocumentControllerExtension.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogTargetSummaryView.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogTaskSummaryView.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.ProjectSystem.Tools.addin.xml">
       <LogicalName>MonoDevelop.ProjectSystem.Tools.addin.xml</LogicalName>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.LogModel\Microsoft.VisualStudio.ProjectSystem.LogModel.csproj">
+      <Project>{03755881-A132-4CC3-9EC4-CD33192C4428}</Project>
+      <Name>Microsoft.VisualStudio.ProjectSystem.LogModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.Tools\Microsoft.VisualStudio.ProjectSystem.Tools.csproj">
+      <Project>{0E542C28-B9D6-4E2F-9C72-48063AB67007}</Project>
+      <Name>Microsoft.VisualStudio.ProjectSystem.Tools</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

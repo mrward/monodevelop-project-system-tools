@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Common.Build.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{03755881-A132-4CC3-9EC4-CD33192C4428}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Microsoft.VisualStudio.ProjectSystem.LogModel</RootNamespace>
+    <AssemblyName>Microsoft.VisualStudio.ProjectSystem.LogModel</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Microsoft.Build">
+      <HintPath>$(MSBuildToolsPath)\Microsoft.Build.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework">
+      <HintPath>$(MSBuildToolsPath)\Microsoft.Build.Framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core">
+      <HintPath>$(MSBuildToolsPath)\Microsoft.Build.Utilities.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Collections.Immutable">
+      <Private>False</Private>
+      <HintPath>$(MDBinDir)\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Build.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Build.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Diagnostic.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Diagnostic.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\EvaluatedLocation.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\EvaluatedLocation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\EvaluatedPass.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\EvaluatedPass.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\EvaluatedProfile.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\EvaluatedProfile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\EvaluatedProject.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\EvaluatedProject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Evaluation.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Evaluation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Item.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Item.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\ItemAction.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\ItemAction.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\ItemGroup.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\ItemGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Log.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Log.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Message.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Message.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Node.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Node.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Project.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Project.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\PropertySet.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\PropertySet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Result.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Result.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Target.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Target.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Task.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Task.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Time.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel\Time.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\BaseInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\BaseInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\BuildInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\BuildInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\DiagnosticInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\DiagnosticInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\EvaluatedLocationInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\EvaluatedLocationInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\EvaluatedPassInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\EvaluatedPassInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\EvaluatedProfileInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\EvaluatedProfileInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\EvaluatedProjectInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\EvaluatedProjectInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\EvaluationInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\EvaluationInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\ItemActionInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\ItemActionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\ItemGroupInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\ItemGroupInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\ItemInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\ItemInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\MessageInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\MessageInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\ModelBuilder.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\ModelBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\ProjectInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\ProjectInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\PropertySetInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\PropertySetInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\TargetInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\TargetInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\TaskInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\TaskInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Builder\TimeInfo.cs">
+      <Link>Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\TimeInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\project-system-tools\src\LogModel\Resources.Designer.cs">
+      <Link>Resources.Designer.cs</Link>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Microsoft.VisualStudio.ProjectSystem.LogModel\" />
+    <Folder Include="Microsoft.VisualStudio.ProjectSystem.LogModel.Builder\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\external\project-system-tools\src\LogModel\Resources.resx">
+      <Link>Resources.resx</Link>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.cs.xlf">
+      <Link>xlf\Resources.cs.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.de.xlf">
+      <Link>xlf\Resources.de.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.es.xlf">
+      <Link>xlf\Resources.es.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.fr.xlf">
+      <Link>xlf\Resources.fr.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.it.xlf">
+      <Link>xlf\Resources.it.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.ja.xlf">
+      <Link>xlf\Resources.ja.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.ko.xlf">
+      <Link>xlf\Resources.ko.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.pl.xlf">
+      <Link>xlf\Resources.pl.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.pt-BR.xlf">
+      <Link>xlf\Resources.pt-BR.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.ru.xlf">
+      <Link>xlf\Resources.ru.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.tr.xlf">
+      <Link>xlf\Resources.tr.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.zh-Hans.xlf">
+      <Link>xlf\Resources.zh-Hans.xlf</Link>
+    </None>
+    <None Include="..\..\external\project-system-tools\src\LogModel\xlf\Resources.zh-Hant.xlf">
+      <Link>xlf\Resources.zh-Hant.xlf</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
