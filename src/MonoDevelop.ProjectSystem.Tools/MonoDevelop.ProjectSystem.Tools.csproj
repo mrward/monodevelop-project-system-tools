@@ -75,6 +75,7 @@
     <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogDocumentControllerExtension.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogTargetSummaryView.cs" />
     <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogTaskSummaryView.cs" />
+    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogSummaryViewBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.ProjectSystem.Tools.addin.xml">

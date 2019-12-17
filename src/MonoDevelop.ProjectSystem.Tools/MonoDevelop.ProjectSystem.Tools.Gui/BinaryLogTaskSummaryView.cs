@@ -31,39 +31,25 @@ using Xwt;
 
 namespace MonoDevelop.ProjectSystem.Tools.Gui
 {
-	class BinaryLogTaskSummaryView : Widget
+	class BinaryLogTaskSummaryView : BinaryLogSummaryViewBase
 	{
 		readonly ObservableCollection<TaskListViewModel> taskListViewItems;
-		ListView listView;
-		ListStore listStore;
+
 		DataField<string> taskNameDataField = new DataField<string> ();
 		DataField<string> sourceFileNameDataField = new DataField<string> ();
 		DataField<string> callsDataField = new DataField<string> ();
 		DataField<int> callsSortField = new DataField<int> ();
 		DataField<string> timeDataField = new DataField<string> ();
-
 		// Cannot sort on TimeSpan. Unsupported data type.
 		DataField<long> timeSortField = new DataField<long> ();
 		DataField<string> percentageDataField = new DataField<string> ();
-
-		// Cannot sort on a double field. Unsupported data type.
-		DataField<int> percentageSortField = new DataField<int> ();
+		DataField<double> percentageSortField = new DataField<double> ();
 
 		public BinaryLogTaskSummaryView (ObservableCollection<TaskListViewModel> taskListViewItems)
 		{
 			this.taskListViewItems = taskListViewItems;
 
-			Build ();
-
-			AddListViewItems ();
-		}
-
-		void Build ()
-		{
-			listView = new ListView ();
-			listView.BorderVisible = false;
-			listView.HeadersVisible = true;
-			listStore = new ListStore (
+			Build (
 				taskNameDataField,
 				sourceFileNameDataField,
 				callsDataField,
@@ -72,58 +58,32 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				timeSortField,
 				percentageDataField,
 				percentageSortField);
-			listView.DataSource = listStore;
 
+			AddListViewColumns ();
+			AddListViewItems ();
+		}
+
+		void AddListViewColumns ()
+		{
 			AddTextColumn (taskNameDataField, GettextCatalog.GetString ("Task Name"));
 			AddTextColumn (sourceFileNameDataField, GettextCatalog.GetString ("Source"));
 			AddTextColumn (callsDataField, GettextCatalog.GetString ("Number"), callsSortField);
 			AddTextColumn (timeDataField, GettextCatalog.GetString ("Time"), timeSortField);
-			AddTextColumn (percentageDataField, GettextCatalog.GetString ("Percentage"));
-
-			Content = listView;
-		}
-
-		void AddTextColumn (DataField<string> dataField, string columnTitle, IDataField sortDataField = null)
-		{
-			var column = new ListViewColumn ();
-			column.Title = columnTitle;
-			column.SortDataField = sortDataField ?? dataField;
-
-			var textViewCell = new TextCellView ();
-			textViewCell.TextField = dataField;
-			column.Views.Add (textViewCell);
-			column.CanResize = true;
-			listView.Columns.Add (column);
+			AddTextColumn (percentageDataField, GettextCatalog.GetString ("Percentage"), percentageSortField);
 		}
 
 		void AddListViewItems ()
 		{
 			foreach (TaskListViewModel viewModel in taskListViewItems) {
 				int row = listStore.AddRow ();
-				listStore.SetValues (
-					row,
-					// Task Name
-					taskNameDataField,
-					viewModel.Name,
-					// Source
-					sourceFileNameDataField,
-					viewModel.SourceFilePath,
-					// Calls
-					callsDataField,
-					viewModel.Number.ToString (),
-					callsSortField,
-					viewModel.Number,
-					// Time
-					timeDataField,
-					viewModel.Time.ToString (@"hh\:mm\:ss\:ffff"),
-					timeSortField,
-					viewModel.Time.Ticks,
-					// Percentage
-					percentageDataField,
-					viewModel.Percentage.ToString ("P2"),
-					percentageSortField,
-					(int)(viewModel.Percentage * 100)
-				);
+
+				listStore.SetValue (row, taskNameDataField, viewModel.Name);
+				listStore.SetValue (row, sourceFileNameDataField, viewModel.SourceFilePath);
+				listStore.SetValue (row, callsDataField, viewModel.Number.ToString ());
+				listStore.SetValue (row, callsSortField, viewModel.Number);
+
+				SetTimeValue (row, viewModel.Time, timeDataField, timeSortField);
+				SetPercentageValue (row, viewModel.Percentage, percentageDataField, percentageSortField);
 			}
 		}
 	}
