@@ -67,7 +67,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		{
 			AddTextColumn (taskNameDataField, GettextCatalog.GetString ("Task Name"));
 			AddTextColumn (sourceFileNameDataField, GettextCatalog.GetString ("Source"));
-			AddTextColumn (callsDataField, GettextCatalog.GetString ("Number"), callsSortField);
+			AddTextColumn (callsDataField, GettextCatalog.GetString ("Calls"), callsSortField);
 			AddTextColumn (timeDataField, GettextCatalog.GetString ("Time"), timeSortField);
 			AddTextColumn (percentageDataField, GettextCatalog.GetString ("Percentage"), percentageSortField);
 		}
