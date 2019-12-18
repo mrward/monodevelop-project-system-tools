@@ -37,6 +37,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		DocumentView mainView;
 		BinaryLogTargetSummaryView targetSummaryView;
 		BinaryLogTaskSummaryView taskSummaryView;
+		BinaryLogEvaluationSummaryView evaluationSummaryView;
 		BinaryLogDocumentData binaryLogDocument;
 		BinaryLogViewModels viewModels;
 
@@ -88,6 +89,10 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 			taskSummaryView = new BinaryLogTaskSummaryView (viewModels.TaskListViewItems);
 			AttachView (taskSummaryView, GettextCatalog.GetString ("Task Summary"));
+
+			// Not seen any evaluations so not adding this view since it will always be empty.
+			//evaluationSummaryView = new BinaryLogEvaluationSummaryView (viewModels.EvaluationListViewItems);
+			//AttachView (evaluationSummaryView, GettextCatalog.GetString ("Evaluation Summary"));
 
 			return mainView;
 		}

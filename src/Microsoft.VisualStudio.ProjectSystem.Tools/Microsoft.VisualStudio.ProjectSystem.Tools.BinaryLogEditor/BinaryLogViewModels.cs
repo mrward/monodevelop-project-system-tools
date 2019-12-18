@@ -15,19 +15,17 @@ namespace Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor
 {
 	internal class BinaryLogViewModels
 	{
-		//readonly ObservableCollection<EvaluationListViewModel> evaluationListViewItems;
-
 		public BinaryLogViewModels (BinaryLogDocumentData binaryLogDocument)
 		{
 			//buildTreeViewItems = new ObservableCollection<BaseViewModel> ();
-			//evaluationTreeViewItems = new ObservableCollection<BaseViewModel> ();
 			TargetListViewItems = new ObservableCollection<TargetListViewModel> ();
 			TaskListViewItems = new ObservableCollection<TaskListViewModel> ();
-			//evaluationListViewItems = new ObservableCollection<EvaluationListViewModel> ();
+			EvaluationListViewItems = new ObservableCollection<EvaluationListViewModel> ();
 
 			BinaryLogDocument = binaryLogDocument;
 		}
 
+		public ObservableCollection<EvaluationListViewModel> EvaluationListViewItems { get; }
 		public ObservableCollection<TargetListViewModel> TargetListViewItems { get; }
 		public ObservableCollection<TaskListViewModel> TaskListViewItems { get; }
 		public BinaryLogDocumentData BinaryLogDocument { get; }
@@ -72,19 +70,28 @@ namespace Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor
 						time.Ticks / (double)totalTime.Ticks));
 				}
 
-				//var allEvaluations = CollectEvaluations (documentData.Log.Evaluations
-				//	.SelectMany (e => e.EvaluatedProjects)
-				//	.Select (p => p.EvaluationProfile)
-				//	.Where (p => p != null)
-				//	.SelectMany (p => p.Passes)
-				//	.SelectMany (p => p.Locations)).ToList ();
-				//var totalEvaluationTime = allEvaluations.Aggregate (TimeSpan.Zero, (current, e) => current + e.Time.ExclusiveTime);
-				//var groupedEvaluations =
-				//	allEvaluations.GroupBy (e => Tuple.Create (e.ElementName, e.Kind, e.File, e.Line));
-				//foreach (var groupedEvaluation in groupedEvaluations) {
-				//	var time = groupedEvaluation.Aggregate (TimeSpan.Zero, (current, e) => current + e.Time.ExclusiveTime);
-				//	evaluationListViewItems.Add (new EvaluationListViewModel (groupedEvaluation.Key.Item1, groupedEvaluation.First ().ElementDescription, groupedEvaluation.Key.Item2.ToString (), groupedEvaluation.Key.Item3, groupedEvaluation.Key.Item4, groupedEvaluation.Count (), time, time.Ticks / (double)totalEvaluationTime.Ticks));
-				//}
+				var allEvaluations = CollectEvaluations (
+					BinaryLogDocument.Log.Evaluations
+						.SelectMany (e => e.EvaluatedProjects)
+						.Select (p => p.EvaluationProfile)
+						.Where (p => p != null)
+						.SelectMany (p => p.Passes)
+						.SelectMany (p => p.Locations)).ToList ();
+				var totalEvaluationTime = allEvaluations.Aggregate (TimeSpan.Zero, (current, e) => current + e.Time.ExclusiveTime);
+				var groupedEvaluations =
+					allEvaluations.GroupBy (e => Tuple.Create (e.ElementName, e.Kind, e.File, e.Line));
+				foreach (var groupedEvaluation in groupedEvaluations) {
+					var time = groupedEvaluation.Aggregate (TimeSpan.Zero, (current, e) => current + e.Time.ExclusiveTime);
+					EvaluationListViewItems.Add (new EvaluationListViewModel (
+						groupedEvaluation.Key.Item1,
+						groupedEvaluation.First ().ElementDescription,
+						groupedEvaluation.Key.Item2.ToString (),
+						groupedEvaluation.Key.Item3,
+						groupedEvaluation.Key.Item4,
+						groupedEvaluation.Count (),
+						time,
+						time.Ticks / (double)totalEvaluationTime.Ticks));
+				}
 			}
 		}
 
