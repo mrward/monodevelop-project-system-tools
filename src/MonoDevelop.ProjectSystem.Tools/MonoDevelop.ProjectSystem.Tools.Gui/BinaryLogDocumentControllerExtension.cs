@@ -35,6 +35,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 	class BinaryLogDocumentControllerExtension : DocumentControllerExtension
 	{
 		DocumentView mainView;
+		BinaryLogBuildTreeView buildTreeView;
 		BinaryLogTargetSummaryView targetSummaryView;
 		BinaryLogTaskSummaryView taskSummaryView;
 		BinaryLogEvaluationSummaryView evaluationSummaryView;
@@ -83,6 +84,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		protected override async Task<DocumentView> OnInitializeView ()
 		{
 			mainView = await base.OnInitializeView ();
+
+			buildTreeView = new BinaryLogBuildTreeView (viewModels.BuildTreeViewItems);
+			AttachView (buildTreeView, GettextCatalog.GetString ("Build"));
 
 			targetSummaryView = new BinaryLogTargetSummaryView (viewModels.TargetListViewItems);
 			AttachView (targetSummaryView, GettextCatalog.GetString ("Target Summary"));

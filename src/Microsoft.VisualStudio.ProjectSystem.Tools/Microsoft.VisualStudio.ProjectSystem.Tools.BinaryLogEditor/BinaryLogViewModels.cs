@@ -17,7 +17,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor
 	{
 		public BinaryLogViewModels (BinaryLogDocumentData binaryLogDocument)
 		{
-			//buildTreeViewItems = new ObservableCollection<BaseViewModel> ();
+			BuildTreeViewItems = new ObservableCollection<BaseViewModel> ();
 			TargetListViewItems = new ObservableCollection<TargetListViewModel> ();
 			TaskListViewItems = new ObservableCollection<TaskListViewModel> ();
 			EvaluationListViewItems = new ObservableCollection<EvaluationListViewModel> ();
@@ -25,6 +25,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor
 			BinaryLogDocument = binaryLogDocument;
 		}
 
+		public ObservableCollection<BaseViewModel> BuildTreeViewItems { get; }
 		public ObservableCollection<EvaluationListViewModel> EvaluationListViewItems { get; }
 		public ObservableCollection<TargetListViewModel> TargetListViewItems { get; }
 		public ObservableCollection<TaskListViewModel> TaskListViewItems { get; }
@@ -32,9 +33,9 @@ namespace Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor
 
 		public void Build ()
 		{
-			//if (documentData.Log.Exceptions.Any ()) {
-			//	buildTreeViewItems.Add (new ListViewModel<Exception> ("Exceptions", documentData.Log.Exceptions, ex => new ExceptionViewModel (ex)));
-			//}
+			if (BinaryLogDocument.Log.Exceptions.Any ()) {
+				BuildTreeViewItems.Add (new ListViewModel<Exception> ("Exceptions", BinaryLogDocument.Log.Exceptions, ex => new ExceptionViewModel (ex)));
+			}
 
 			//if (documentData.Log.Evaluations.Any ()) {
 			//	evaluationTreeViewItems.Add (new ListViewModel<Evaluation> ($"Evaluations ({documentData.Log.Evaluations.SelectMany (e => e.EvaluatedProjects).Aggregate (TimeSpan.Zero, (t, p) => t + (p.EndTime - p.StartTime)):mm':'ss'.'ffff})", documentData.Log.Evaluations, e => e.EvaluatedProjects.Count == 1
@@ -43,7 +44,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor
 			//}
 
 			if (BinaryLogDocument.Log.Build?.Projects != null) {
-				//buildTreeViewItems.Add (new BuildViewModel (documentData.Log.Build));
+				BuildTreeViewItems.Add (new BuildViewModel (BinaryLogDocument.Log.Build));
 
 				var allTargets = CollectTargets (BinaryLogDocument.Log.Build.Projects);
 				var groupedTargets = allTargets.GroupBy (target => Tuple.Create (target.Name, target.SourceFilePath));
