@@ -93,6 +93,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				elapsedDataField,
 				GetDisplayText (target.Duration),
 
+				elapsedSortDataField,
+				GetSortDuration (target.Duration),
+
 				targetsDataField,
 				target.Targets,
 
@@ -101,6 +104,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 				startDataField,
 				GetDisplayText (target.StartTime),
+
+				startSortDataField,
+				target.StartTime.ToString ("yyyyMMddHHmmss"),
 
 				statusDataField,
 				target.Status.GetDisplayText (),
@@ -118,6 +124,14 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			return duration.Value.TotalSeconds.ToString ("N3");
 		}
 
+		static long GetSortDuration (TimeSpan? duration)
+		{
+			if (!duration.HasValue)
+				return -1;
+
+			return duration.Value.Ticks;
+		}
+
 		static string GetDisplayText (DateTime time)
 		{
 			return time.ToString ("s");
@@ -133,6 +147,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 						elapsedDataField,
 						GetDisplayText (target.Duration),
+
+						elapsedSortDataField,
+						GetSortDuration (target.Duration),
 
 						statusDataField,
 						target.Status.GetDisplayText ());

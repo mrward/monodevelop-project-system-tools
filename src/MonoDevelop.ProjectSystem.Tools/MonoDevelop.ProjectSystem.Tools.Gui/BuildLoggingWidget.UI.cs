@@ -38,7 +38,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		DataField<string> targetsDataField = new DataField<string> ();
 		DataField<string> typeDataField = new DataField<string> ();
 		DataField<string> startDataField = new DataField<string> ();
+		DataField<string> startSortDataField = new DataField<string> ();
 		DataField<string> elapsedDataField = new DataField<string> ();
+		DataField<long> elapsedSortDataField = new DataField<long> ();
 		DataField<string> statusDataField = new DataField<string> ();
 		DataField<MSBuildTarget> msbuildTargetDataField = new DataField<MSBuildTarget> ();
 
@@ -47,13 +49,16 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			listView = new ListView ();
 			listView.BorderVisible = false;
 			listView.HeadersVisible = true;
+
 			listStore = new ListStore (
 				projectDataField,
 				dimensionsDataField,
 				targetsDataField,
 				typeDataField,
 				startDataField,
+				startSortDataField,
 				elapsedDataField,
+				elapsedSortDataField,
 				statusDataField,
 				msbuildTargetDataField);
 			listView.DataSource = listStore;
@@ -62,19 +67,20 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			AddTextColumn (dimensionsDataField, GettextCatalog.GetString ("Dimensions"));
 			AddTextColumn (targetsDataField, GettextCatalog.GetString ("Targets"));
 			AddTextColumn (typeDataField, GettextCatalog.GetString ("Type"));
-			AddTextColumn (startDataField, GettextCatalog.GetString ("Start"));
-			AddTextColumn (elapsedDataField, GettextCatalog.GetString ("Elapsed"));
+			AddTextColumn (startDataField, GettextCatalog.GetString ("Start"), startSortDataField);
+			AddTextColumn (elapsedDataField, GettextCatalog.GetString ("Elapsed"), elapsedSortDataField);
 			AddTextColumn (statusDataField, GettextCatalog.GetString ("Status"));
 
 			Content = listView;
 		}
 
-		void AddTextColumn (DataField<string> dataField, string columnTitle)
+		void AddTextColumn (DataField<string> dataField, string columnTitle, IDataField sortDataField = null)
 		{
 			var column = new ListViewColumn ();
 			column.Title = columnTitle;
 			var textViewCell = new TextCellView ();
 			textViewCell.TextField = dataField;
+			column.SortDataField = sortDataField ?? dataField;
 			column.Views.Add (textViewCell);
 			column.CanResize = true;
 			listView.Columns.Add (column);
