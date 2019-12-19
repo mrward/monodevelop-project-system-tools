@@ -40,7 +40,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		DocumentViewContent buildTreeDocumentView;
 		BinaryLogTargetSummaryView targetSummaryView;
 		BinaryLogTaskSummaryView taskSummaryView;
-		BinaryLogEvaluationSummaryView evaluationSummaryView;
+		//BinaryLogEvaluationSummaryView evaluationSummaryView;
 		BinaryLogDocumentData binaryLogDocument;
 		BinaryLogViewModels viewModels;
 
