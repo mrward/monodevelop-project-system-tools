@@ -28,14 +28,16 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor;
 using MonoDevelop.Components;
 using MonoDevelop.Core;
+using MonoDevelop.DesignerSupport;
 using MonoDevelop.Ide.Gui.Documents;
 
 namespace MonoDevelop.ProjectSystem.Tools.Gui
 {
-	class BinaryLogDocumentControllerExtension : DocumentControllerExtension
+	class BinaryLogDocumentControllerExtension : DocumentControllerExtension, IPropertyPadProvider
 	{
 		DocumentView mainView;
 		BinaryLogBuildTreeView buildTreeView;
+		DocumentViewContent buildTreeDocumentView;
 		BinaryLogTargetSummaryView targetSummaryView;
 		BinaryLogTaskSummaryView taskSummaryView;
 		BinaryLogEvaluationSummaryView evaluationSummaryView;
@@ -86,7 +88,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			mainView = await base.OnInitializeView ();
 
 			buildTreeView = new BinaryLogBuildTreeView (viewModels.BuildTreeViewItems);
-			AttachView (buildTreeView, GettextCatalog.GetString ("Build"));
+			buildTreeDocumentView = AttachView (buildTreeView, GettextCatalog.GetString ("Build"));
 
 			targetSummaryView = new BinaryLogTargetSummaryView (viewModels.TargetListViewItems);
 			AttachView (targetSummaryView, GettextCatalog.GetString ("Target Summary"));
@@ -101,12 +103,43 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			return mainView;
 		}
 
-		void AttachView (Xwt.Widget childView, string title)
+		DocumentViewContent AttachView (Xwt.Widget childView, string title)
 		{
 			var content = new DocumentViewContent (() => new XwtControl (childView)) {
 				Title = title
 			};
 			mainView.AttachedViews.Add (content);
+
+			return content;
+		}
+
+		object IPropertyPadProvider.GetActiveComponent ()
+		{
+			if (!IsBuildTreeViewActive ())
+				return null;
+
+			return buildTreeView.GetActiveComponent ();
+		}
+
+		object IPropertyPadProvider.GetProvider ()
+		{
+			if (!IsBuildTreeViewActive ())
+				return null;
+
+			return buildTreeView.GetProvider ();
+		}
+
+		bool IsBuildTreeViewActive ()
+		{
+			return mainView.ActiveViewInHierarchy == buildTreeDocumentView;
+		}
+
+		void IPropertyPadProvider.OnEndEditing (object obj)
+		{
+		}
+
+		void IPropertyPadProvider.OnChanged (object obj)
+		{
 		}
 	}
 }

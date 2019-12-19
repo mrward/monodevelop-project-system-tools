@@ -9,6 +9,10 @@
       <Private>False</Private>
       <HintPath>$(MDBinDir)\MonoDevelop.Core.dll</HintPath>
     </Reference>
+    <Reference Include="MonoDevelop.DesignerSupport">
+      <Private>False</Private>
+      <HintPath>$(MDBinDir)\..\AddIns\MonoDevelop.DesignerSupport\MonoDevelop.DesignerSupport.dll</HintPath>
+    </Reference>
     <Reference Include="MonoDevelop.Ide">
       <Private>False</Private>
       <HintPath>$(MDBinDir)\MonoDevelop.Ide.dll</HintPath>

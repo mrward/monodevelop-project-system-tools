@@ -25,9 +25,11 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.ProjectSystem.LogModel;
 using Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor.ViewModel;
+using MonoDevelop.DesignerSupport;
 using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui;
 using Xwt;
@@ -35,7 +37,7 @@ using Xwt.Drawing;
 
 namespace MonoDevelop.ProjectSystem.Tools.Gui
 {
-	class BinaryLogBuildTreeView : Widget
+	class BinaryLogBuildTreeView : Widget, IPropertyPadProvider
 	{
 		ObservableCollection<BaseViewModel> rootViewModels;
 		TreeView treeView;
@@ -43,6 +45,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		DataField<string> textDataField = new DataField<string> ();
 		DataField<Image> imageDataField = new DataField<Image> ();
 		DataField<BaseViewModel> viewModelDataField = new DataField<BaseViewModel> ();
+		BaseViewModel selectedViewModel;
 
 		public BinaryLogBuildTreeView (ObservableCollection<BaseViewModel> rootViewModels)
 		{
@@ -50,6 +53,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 			Build ();
 			AddTreeViewItems ();
+
+			treeView.SelectionChanged += TreeViewSelectionChanged;
 		}
 
 		void Build ()
@@ -134,6 +139,49 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				default:
 					return null;
 			}
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (disposing) {
+				treeView.SelectionChanged -= TreeViewSelectionChanged;
+			}
+			base.Dispose (disposing);
+		}
+
+		void TreeViewSelectionChanged (object sender, EventArgs e)
+		{
+			selectedViewModel = GetBaseViewModel (treeView.SelectedRow);
+		}
+
+		BaseViewModel GetBaseViewModel (TreePosition position)
+		{
+			if (position == null)
+				return null;
+
+			TreeNavigator navigator = treeStore.GetNavigatorAt (position);
+			if (navigator == null)
+				return null;
+
+			return navigator.GetValue (viewModelDataField);
+		}
+
+		public object GetActiveComponent ()
+		{
+			return selectedViewModel?.Properties;
+		}
+
+		public object GetProvider ()
+		{
+			return GetActiveComponent ();
+		}
+
+		public void OnEndEditing (object obj)
+		{
+		}
+
+		public void OnChanged (object obj)
+		{
 		}
 	}
 }
