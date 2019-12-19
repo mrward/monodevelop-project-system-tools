@@ -42,10 +42,10 @@ namespace Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor
 			//			: new EvaluationViewModel (e)));
 			//}
 
-			if (BinaryLogDocument.Log.Build?.Project != null) {
+			if (BinaryLogDocument.Log.Build?.Projects != null) {
 				//buildTreeViewItems.Add (new BuildViewModel (documentData.Log.Build));
 
-				var allTargets = CollectTargets (BinaryLogDocument.Log.Build.Project);
+				var allTargets = CollectTargets (BinaryLogDocument.Log.Build.Projects);
 				var groupedTargets = allTargets.GroupBy (target => Tuple.Create (target.Name, target.SourceFilePath));
 				var totalTime = BinaryLogDocument.Log.Build.EndTime - BinaryLogDocument.Log.Build.StartTime;
 				foreach (var groupedTarget in groupedTargets) {
@@ -58,7 +58,7 @@ namespace Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor
 						time.Ticks / (double)totalTime.Ticks));
 				}
 
-				var allTasks = CollectTasks (BinaryLogDocument.Log.Build.Project);
+				var allTasks = CollectTasks (BinaryLogDocument.Log.Build.Projects);
 				var groupedTasks = allTasks.GroupBy (task => Tuple.Create (task.Name, task.SourceFilePath));
 				foreach (var groupedTask in groupedTasks) {
 					var time = groupedTask.Aggregate (TimeSpan.Zero, (current, task) => current + (task.EndTime - task.StartTime));
@@ -95,12 +95,30 @@ namespace Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor
 			}
 		}
 
+		static IEnumerable<Target> CollectTargets (IEnumerable<Project> projects)
+		{
+			var allTargets = new List<Target> ();
+			foreach (var targets in projects.Select (p => CollectTargets (p))) {
+				allTargets.AddRange (targets);
+			}
+			return allTargets;
+		}
+
 		static IEnumerable<Target> CollectTargets (Project project)
 		{
 			return project.Targets.Union (
 				project.Targets.SelectMany (t => t.Tasks)
 					.SelectMany (t => t.ChildProjects)
 					.SelectMany (CollectTargets));
+		}
+
+		static IEnumerable<Task> CollectTasks (IEnumerable<Project> projects)
+		{
+			var allTasks = new List<Task> ();
+			foreach (var tasks in projects.Select (p => CollectTasks (p))) {
+				allTasks.AddRange (tasks);
+			}
+			return allTasks;
 		}
 
 		static IEnumerable<Task> CollectTasks (Project project)
