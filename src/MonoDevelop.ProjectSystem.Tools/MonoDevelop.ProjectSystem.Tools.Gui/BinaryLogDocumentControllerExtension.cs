@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor;
 using MonoDevelop.Components;
@@ -69,6 +70,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		{
 			await base.Initialize (status);
 
+			Controller.DocumentTitleChanged += OnDocumentTitleChanged;
+
 			binaryLogDocument = new BinaryLogDocumentData ();
 			viewModels = new BinaryLogViewModels (binaryLogDocument);
 			await Task.Run (() => {
@@ -81,7 +84,19 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		{
 			base.Dispose ();
 
+			if (Controller != null) {
+				Controller.DocumentTitleChanged -= OnDocumentTitleChanged;
+			}
+
 			mainView = null;
+		}
+
+		void OnDocumentTitleChanged (object sender, EventArgs e)
+		{
+			if (Controller is FileDocumentController fileController) {
+				// Workaround the BuildOutputView setting the document title to be the full filepath.
+				fileController.DocumentTitle = fileController.FilePath.FileName;
+			}
 		}
 
 		protected override async Task<DocumentView> OnInitializeView ()
