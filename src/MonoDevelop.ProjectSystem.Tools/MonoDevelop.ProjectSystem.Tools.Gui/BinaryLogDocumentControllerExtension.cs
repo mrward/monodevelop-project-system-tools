@@ -47,7 +47,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		public override Task<bool> SupportsController (DocumentController controller)
 		{
 			bool supported = false;
-			if (controller is FileDocumentController fileController) {
+			if (controller is FileDocumentController fileController &&
+				fileController.FilePath.IsNotNull) {
 				supported = fileController.FilePath.HasExtension (".binlog");
 			}
 
