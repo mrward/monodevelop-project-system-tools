@@ -31,7 +31,31 @@ To open a binary log into the binary log viewer:
 
 Note that not all MSBuild targets currently support generating a binary log.
 
-![MSBuild Binary Log File](doc/images/MSBuildBinaryLogFile.png)
+![MSBuild Binary Log File - Build tab](doc/images/MSBuildBinaryLogFileBuildTab.png)
 
+Three tabs are available when a binlog file is opened.
 
+  - Build
+    - Tree view of the binary log targets and tasks
+    - Properties for a target or task are shown in the Properties window.
+  - Target Summary
+     - Target name
+     - Source filename
+     - Number of calls
+     - Time taken
+     - Percentage of total time taken
+  - Task Summary
+     - Task name
+     - Source filename
+     - Number of calls
+     - Time taken
+     - Percentage of total time taken
+
+![MSBuild Binary Log File - Target Summary tab](doc/images/TargetSummaryTab.png)
+
+![MSBuild Binary Log File - Task Summary tab](doc/images/TaskSummaryTab.png)
+
+Selecting a tree node in the Build tab will show properties for the node in the Properties window.
+
+![MSBuild Binary Log File - Build tab - Properties window](doc/images/BuildTabProperties.png)
 
