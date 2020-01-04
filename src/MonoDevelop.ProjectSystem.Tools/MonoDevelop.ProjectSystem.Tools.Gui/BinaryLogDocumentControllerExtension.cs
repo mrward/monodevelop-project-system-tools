@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor;
 using MonoDevelop.Components;
@@ -44,6 +45,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		//BinaryLogEvaluationSummaryView evaluationSummaryView;
 		BinaryLogDocumentData binaryLogDocument;
 		BinaryLogViewModels viewModels;
+		FilePath originalFileName;
 
 		public override Task<bool> SupportsController (DocumentController controller)
 		{
@@ -71,6 +73,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			await base.Initialize (status);
 
 			Controller.DocumentTitleChanged += OnDocumentTitleChanged;
+
+			originalFileName = fileController.FilePath;
 
 			binaryLogDocument = new BinaryLogDocumentData ();
 			viewModels = new BinaryLogViewModels (binaryLogDocument);
@@ -127,6 +131,22 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			mainView.AttachedViews.Add (content);
 
 			return content;
+		}
+
+		/// <summary>
+		/// Workaround SaveAs dialog being shown twice by the default BuildOutputViewContent.
+		/// </summary>
+		public override Task OnSave ()
+		{
+			if (Controller is FileDocumentController fileController) {
+				FilePath fileName = fileController.FilePath;
+				if (originalFileName.IsNotNull) {
+					File.Copy (originalFileName, fileName, true);
+					originalFileName = fileName;
+					return Task.CompletedTask;
+				}
+			}
+			return base.OnSave ();
 		}
 
 		object IPropertyPadProvider.GetActiveComponent ()
