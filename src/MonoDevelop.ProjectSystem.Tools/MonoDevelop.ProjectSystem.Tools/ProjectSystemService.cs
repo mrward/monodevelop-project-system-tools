@@ -27,15 +27,45 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Projects;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
 	static class ProjectSystemService
 	{
-		public static bool IsEnabled { get; set; }
+		static bool enabled;
+		static bool initializedMSBuildTaskLogging;
+
+		public static bool IsEnabled {
+			get { return enabled; }
+			set {
+				enabled = value;
+				if (enabled && !initializedMSBuildTaskLogging) {
+					InitializeMSBuildTaskLogging ();
+					initializedMSBuildTaskLogging = true;
+				}
+			}
+		}
+
+		static void InitializeMSBuildTaskLogging ()
+		{
+			try {
+				// This is needed to ensure task inputs are logged. The remote msbuild host
+				// does not set the BuildParameters.LogTaskInputs to true itself and setting
+				// the MSBUILDLOGTASKINPUTS environment variable is a workaround.
+				Environment.SetEnvironmentVariable ("MSBUILDLOGTASKINPUTS", "1");
+
+				// Ensure remote msbuild hosts are recreated so the MSBUILDLOGTASKINPUTS
+				// environment variable is inherited by the new host processes.
+				foreach (Project project in IdeApp.Workspace.GetAllProjects ()) {
+					project.ShutdownProjectBuilder ();
+				}
+			} catch (Exception ex) {
+				LoggingService.LogError ("Failed to shutdown project builders after enabling MSBuild task input logging", ex);
+			}
+		}
 
 		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetStarted;
 		public static event EventHandler<MSBuildTargetEventArgs> MSBuildTargetFinished;
