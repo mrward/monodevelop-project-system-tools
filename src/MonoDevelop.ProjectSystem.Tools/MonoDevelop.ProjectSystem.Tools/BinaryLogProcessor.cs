@@ -62,6 +62,10 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		void ProjectStarted (object sender, ProjectStartedEventArgs e)
 		{
+			if (!string.IsNullOrEmpty (e.ProjectFile)) {
+				projectFileNames.Add (e.ProjectFile);
+			}
+
 			if (e.Properties == null) {
 				return;
 			}
