@@ -109,6 +109,10 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				columns[StartColumnIndex].Width = 150;
 				columns[ElapsedColumnIndex].Width = 60;
 				columns[StatusColumnIndex].Width = 70;
+
+				tableView.Identifier = "MonoDevelop.BuildLogging.BuildingLoggingWindow.ListView";
+				tableView.AutosaveName = tableView.Identifier;
+				tableView.AutosaveTableColumns = true;
 			}
 		}
 	}
