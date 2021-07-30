@@ -11,7 +11,7 @@
     </Reference>
     <Reference Include="MonoDevelop.DesignerSupport">
       <Private>False</Private>
-      <HintPath>$(MDBinDir)\..\AddIns\MonoDevelop.DesignerSupport\MonoDevelop.DesignerSupport.dll</HintPath>
+      <HintPath>$(MDBinDir)\AddIns\MonoDevelop.DesignerSupport\MonoDevelop.DesignerSupport.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Ide">
       <Private>False</Private>
@@ -24,6 +24,10 @@
     <Reference Include="System.Collections.Immutable">
       <Private>False</Private>
       <HintPath>$(MDBinDir)\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Mac">
+      <HintPath>$(MDBinDir)\Xamarin.Mac.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Xwt">
       <Private>False</Private>

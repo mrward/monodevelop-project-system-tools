@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using AppKit;
 using MonoDevelop.Components;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
@@ -214,7 +215,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			}
 
 			var commands = IdeApp.CommandService.CreateCommandEntrySet ("/MonoDevelop/BuildLoggingPad/ContextMenu");
-			IdeApp.CommandService.ShowContextMenu (listView.ToGtkWidget (), (int)e.X, (int)e.Y, commands, this);
+			var view = listView.Surface.NativeWidget as NSView;
+			IdeApp.CommandService.ShowContextMenu (view, (int)e.X, (int)e.Y, commands, this);
 		}
 
 		[CommandUpdateHandler (BuildLoggingCommands.OpenLogFile)]

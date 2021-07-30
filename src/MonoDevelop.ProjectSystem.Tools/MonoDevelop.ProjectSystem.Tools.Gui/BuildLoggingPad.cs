@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using Gtk;
 using MonoDevelop.Components;
+using MonoDevelop.Components.Declarative;
 using MonoDevelop.Components.Docking;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui;
@@ -38,11 +39,11 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 	{
 		BuildLoggingWidget widget;
 		XwtControl control;
-		Button startButton;
-		Button stopButton;
-		Button clearButton;
+		PadToolbarButtonItem startButton;
+		PadToolbarButtonItem stopButton;
+		PadToolbarButtonItem clearButton;
 		ComboBox buildTypeFilterComboBox;
-		SearchEntry searchEntry;
+		PadToolbarSearchItem searchEntry;
 		TimeSpan searchDelayTimeSpan = TimeSpan.FromMilliseconds (250);
 		IDisposable searchTimer;
 
@@ -58,7 +59,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 					widget = new BuildLoggingWidget ();
 					control = new XwtControl (widget);
 				}
-				return control;
+				// Returning control does not work.
+				return control.GetNativeWidget<AppKit.NSView> ();
 			}
 		}
 
@@ -71,7 +73,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			stopButton.Clicked -= OnStopButtonClicked;
 			clearButton.Clicked -= OnClearButtonClicked;
 			buildTypeFilterComboBox.Changed -= BuildTypeFilterComboBoxChanged;
-			searchEntry.Entry.Changed -= SearchEntryChanged;
+			searchEntry.TextChanged -= SearchEntryChanged;
 
 			DisposeExistingTimer ();
 
@@ -82,42 +84,42 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		protected override void Initialize (IPadWindow window)
 		{
-			var toolbar = window.GetToolbar (DockPositionType.Top);
+			var toolbar = new PadToolbar ();
 
-			startButton = new Button (new ImageView (Ide.Gui.Stock.RunProgramIcon, IconSize.Menu));
+			startButton = new PadToolbarButtonItem (toolbar.Properties, nameof (startButton));
+			startButton.Icon = Ide.Gui.Stock.RunProgramIcon;
 			startButton.Clicked += OnStartButtonClicked;
-			startButton.TooltipText = GettextCatalog.GetString ("Enable build logging");
-			toolbar.Add (startButton);
+			startButton.Tooltip = GettextCatalog.GetString ("Enable build logging");
+			toolbar.AddItem (startButton);
 
-			stopButton = new Button (new ImageView (Ide.Gui.Stock.Stop, IconSize.Menu));
+			stopButton = new PadToolbarButtonItem (toolbar.Properties, nameof (stopButton));
+			stopButton.Icon = Ide.Gui.Stock.Stop;
 			stopButton.Clicked += OnStopButtonClicked;
-			stopButton.TooltipText = GettextCatalog.GetString ("Stop build logging");
-			stopButton.Sensitive = false;
-			toolbar.Add (stopButton);
+			stopButton.Tooltip = GettextCatalog.GetString ("Stop build logging");
+			//stopButton.Sensitive = false;
+			toolbar.AddItem (stopButton);
 
-			clearButton = new Button (new ImageView (Ide.Gui.Stock.Broom, IconSize.Menu));
+			clearButton = new PadToolbarButtonItem (toolbar.Properties, nameof (clearButton));
+			clearButton.Icon = Ide.Gui.Stock.Clear;
 			clearButton.Clicked += OnClearButtonClicked;
-			clearButton.TooltipText = GettextCatalog.GetString ("Clear");
-			toolbar.Add (clearButton);
+			clearButton.Tooltip = GettextCatalog.GetString ("Clear");
+			toolbar.AddItem (clearButton);
 
-			string[] buildTypeItems = buildTypes
-				.Select (buildType => GetDisplayText (buildType))
-				.ToArray ();
-			buildTypeFilterComboBox = new ComboBox (buildTypeItems);
-			buildTypeFilterComboBox.Active = 0;
-			buildTypeFilterComboBox.Changed += BuildTypeFilterComboBoxChanged;
-			toolbar.Add (buildTypeFilterComboBox);
+			//string[] buildTypeItems = buildTypes
+			//	.Select (buildType => GetDisplayText (buildType))
+			//	.ToArray ();
+			//buildTypeFilterComboBox = new ComboBox (buildTypeItems);
+			//buildTypeFilterComboBox.Active = 0;
+			//buildTypeFilterComboBox.Changed += BuildTypeFilterComboBoxChanged;
+			//toolbar.Add (buildTypeFilterComboBox);
 
-			var spacer = new HBox ();
-			toolbar.Add (spacer, true);
+			searchEntry = new PadToolbarSearchItem (toolbar.Properties, nameof (searchEntry));
+			searchEntry.Position = PadToolbarItemPosition.Trailing;
+			searchEntry.Label = GettextCatalog.GetString ("Search");
+			searchEntry.TextChanged += SearchEntryChanged;
+			toolbar.AddItem (searchEntry);
 
-			searchEntry = new SearchEntry ();
-			searchEntry.WidthRequest = 200;
-			searchEntry.Visible = true;
-			searchEntry.Entry.Changed += SearchEntryChanged;
-			toolbar.Add (searchEntry);
-
-			toolbar.ShowAll ();
+			window.SetToolbar (toolbar, DockPositionType.Top);
 
 			ProjectSystemService.MSBuildTargetStarted += MSBuildTargetStarted;
 			ProjectSystemService.MSBuildTargetFinished += MSBuildTargetFinished;
@@ -126,15 +128,15 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		void OnStartButtonClicked (object sender, EventArgs e)
 		{
 			ProjectSystemService.IsEnabled = true;
-			startButton.Sensitive = false;
-			stopButton.Sensitive = true;
+			//startButton.Sensitive = false;
+			//stopButton.Sensitive = true;
 		}
 
 		void OnStopButtonClicked (object sender, EventArgs e)
 		{
 			ProjectSystemService.IsEnabled = false;
-			startButton.Sensitive = true;
-			stopButton.Sensitive = false;
+			//startButton.Sensitive = true;
+			//stopButton.Sensitive = false;
 		}
 
 		void OnClearButtonClicked (object sender, EventArgs e)
@@ -183,8 +185,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		bool Search ()
 		{
-			widget.SearchFilter = searchEntry.Entry.Text;
-			return true;
+			widget.SearchFilter = searchEntry.Text;
+			return false;
 		}
 
 		void DisposeExistingTimer ()

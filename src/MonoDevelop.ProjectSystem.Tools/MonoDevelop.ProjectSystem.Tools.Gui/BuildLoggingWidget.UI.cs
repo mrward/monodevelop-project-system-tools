@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using AppKit;
 using MonoDevelop.Core;
 using Xwt;
 
@@ -41,6 +42,14 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		DataField<string> elapsedDataField = new DataField<string> ();
 		DataField<string> statusDataField = new DataField<string> ();
 		DataField<MSBuildTarget> msbuildTargetDataField = new DataField<MSBuildTarget> ();
+
+		const int ProjectColumnIndex = 0;
+		const int DimensionsColumnIndex = 1;
+		const int TargetsColumnIndex = 2;
+		const int TypeColumnIndex = 3;
+		const int StartColumnIndex = 4;
+		const int ElapsedColumnIndex = 5;
+		const int StatusColumnIndex = 6;
 
 		void Build ()
 		{
@@ -66,6 +75,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			AddTextColumn (elapsedDataField, GettextCatalog.GetString ("Elapsed"));
 			AddTextColumn (statusDataField, GettextCatalog.GetString ("Status"));
 
+			SetInitialListViewColumnWidths ();
+
 			Content = listView;
 		}
 
@@ -78,6 +89,27 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			column.Views.Add (textViewCell);
 			column.CanResize = true;
 			listView.Columns.Add (column);
+		}
+
+		void SetInitialListViewColumnWidths ()
+		{
+			var view = listView.Surface.NativeWidget as NSView;
+			if (view is NSScrollView scroll) {
+				view = scroll.DocumentView as NSView;
+			}
+
+			var tableView = view as NSTableView;
+			if (tableView != null) {
+				var columns = tableView.TableColumns ();
+
+				columns[ProjectColumnIndex].Width = 250;
+				columns[DimensionsColumnIndex].Width = 150;
+				columns[TargetsColumnIndex].Width = 450;
+				columns[TypeColumnIndex].Width = 100;
+				columns[StartColumnIndex].Width = 150;
+				columns[ElapsedColumnIndex].Width = 60;
+				columns[StatusColumnIndex].Width = 70;
+			}
 		}
 	}
 }
