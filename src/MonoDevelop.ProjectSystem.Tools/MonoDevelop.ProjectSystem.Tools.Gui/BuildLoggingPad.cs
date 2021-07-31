@@ -39,11 +39,11 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 	{
 		BuildLoggingWidget widget;
 		XwtControl control;
-		PadToolbarButtonItem startButton;
-		PadToolbarButtonItem stopButton;
-		PadToolbarButtonItem clearButton;
+		ToolbarButtonItem startButton;
+		ToolbarButtonItem stopButton;
+		ToolbarButtonItem clearButton;
 		ComboBox buildTypeFilterComboBox;
-		PadToolbarSearchItem searchEntry;
+		ToolbarSearchItem searchEntry;
 		TimeSpan searchDelayTimeSpan = TimeSpan.FromMilliseconds (250);
 		IDisposable searchTimer;
 
@@ -86,20 +86,21 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		{
 			var toolbar = new PadToolbar ();
 
-			startButton = new PadToolbarButtonItem (toolbar.Properties, nameof (startButton));
+			startButton = new ToolbarButtonItem (toolbar.Properties, nameof (startButton));
 			startButton.Icon = Ide.Gui.Stock.RunProgramIcon;
 			startButton.Clicked += OnStartButtonClicked;
 			startButton.Tooltip = GettextCatalog.GetString ("Enable build logging");
 			toolbar.AddItem (startButton);
 
-			stopButton = new PadToolbarButtonItem (toolbar.Properties, nameof (stopButton));
+			stopButton = new ToolbarButtonItem (toolbar.Properties, nameof (stopButton));
 			stopButton.Icon = Ide.Gui.Stock.Stop;
 			stopButton.Clicked += OnStopButtonClicked;
 			stopButton.Tooltip = GettextCatalog.GetString ("Stop build logging");
-			//stopButton.Sensitive = false;
+			// Cannot disable the button before the underlying NSView is created.
+			//stopButton.Enabled = false;
 			toolbar.AddItem (stopButton);
 
-			clearButton = new PadToolbarButtonItem (toolbar.Properties, nameof (clearButton));
+			clearButton = new ToolbarButtonItem (toolbar.Properties, nameof (clearButton));
 			clearButton.Icon = Ide.Gui.Stock.Clear;
 			clearButton.Clicked += OnClearButtonClicked;
 			clearButton.Tooltip = GettextCatalog.GetString ("Clear");
@@ -113,13 +114,17 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			//buildTypeFilterComboBox.Changed += BuildTypeFilterComboBoxChanged;
 			//toolbar.Add (buildTypeFilterComboBox);
 
-			searchEntry = new PadToolbarSearchItem (toolbar.Properties, nameof (searchEntry));
-			searchEntry.Position = PadToolbarItemPosition.Trailing;
+			searchEntry = new ToolbarSearchItem (toolbar.Properties, nameof (searchEntry));
+			searchEntry.Position = ToolbarItemPosition.Trailing;
 			searchEntry.Label = GettextCatalog.GetString ("Search");
 			searchEntry.TextChanged += SearchEntryChanged;
 			toolbar.AddItem (searchEntry);
 
 			window.SetToolbar (toolbar, DockPositionType.Top);
+
+			// Workaround being unable to set the button's Enabled state before the underlying
+			// NSView is created. It is created after SetToolbar is called.
+			stopButton.Enabled = false;
 
 			ProjectSystemService.MSBuildTargetStarted += MSBuildTargetStarted;
 			ProjectSystemService.MSBuildTargetFinished += MSBuildTargetFinished;
@@ -128,15 +133,15 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		void OnStartButtonClicked (object sender, EventArgs e)
 		{
 			ProjectSystemService.IsEnabled = true;
-			//startButton.Sensitive = false;
-			//stopButton.Sensitive = true;
+			startButton.Enabled = false;
+			stopButton.Enabled = true;
 		}
 
 		void OnStopButtonClicked (object sender, EventArgs e)
 		{
 			ProjectSystemService.IsEnabled = false;
-			//startButton.Sensitive = true;
-			//stopButton.Sensitive = false;
+			startButton.Enabled = true;
+			stopButton.Enabled = false;
 		}
 
 		void OnClearButtonClicked (object sender, EventArgs e)
