@@ -96,7 +96,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			stopButton.Icon = Ide.Gui.Stock.Stop;
 			stopButton.Clicked += OnStopButtonClicked;
 			stopButton.Tooltip = GettextCatalog.GetString ("Stop build logging");
-			//stopButton.Sensitive = false;
+			stopButton.Enabled = false;
 			toolbar.AddItem (stopButton);
 
 			clearButton = new PadToolbarButtonItem (toolbar.Properties, nameof (clearButton));
@@ -128,15 +128,15 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		void OnStartButtonClicked (object sender, EventArgs e)
 		{
 			ProjectSystemService.IsEnabled = true;
-			//startButton.Sensitive = false;
-			//stopButton.Sensitive = true;
+			startButton.Enabled = false;
+			stopButton.Enabled = true;
 		}
 
 		void OnStopButtonClicked (object sender, EventArgs e)
 		{
 			ProjectSystemService.IsEnabled = false;
-			//startButton.Sensitive = true;
-			//stopButton.Sensitive = false;
+			startButton.Enabled = true;
+			stopButton.Enabled = false;
 		}
 
 		void OnClearButtonClicked (object sender, EventArgs e)
