@@ -42,7 +42,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		PadToolbarButtonItem startButton;
 		PadToolbarButtonItem stopButton;
 		PadToolbarButtonItem clearButton;
-		ComboBox buildTypeFilterComboBox;
+		PadToolbarComboBoxItem buildTypeFilterComboBox;
 		PadToolbarSearchItem searchEntry;
 		TimeSpan searchDelayTimeSpan = TimeSpan.FromMilliseconds (250);
 		IDisposable searchTimer;
@@ -72,7 +72,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			startButton.Clicked -= OnStartButtonClicked;
 			stopButton.Clicked -= OnStopButtonClicked;
 			clearButton.Clicked -= OnClearButtonClicked;
-			buildTypeFilterComboBox.Changed -= BuildTypeFilterComboBoxChanged;
+			buildTypeFilterComboBox.SelectionChanged -= BuildTypeFilterComboBoxChanged;
 			searchEntry.TextChanged -= SearchEntryChanged;
 
 			DisposeExistingTimer ();
@@ -105,13 +105,14 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			clearButton.Tooltip = GettextCatalog.GetString ("Clear");
 			toolbar.AddItem (clearButton);
 
-			//string[] buildTypeItems = buildTypes
-			//	.Select (buildType => GetDisplayText (buildType))
-			//	.ToArray ();
-			//buildTypeFilterComboBox = new ComboBox (buildTypeItems);
-			//buildTypeFilterComboBox.Active = 0;
-			//buildTypeFilterComboBox.Changed += BuildTypeFilterComboBoxChanged;
-			//toolbar.Add (buildTypeFilterComboBox);
+			string[] buildTypeItems = buildTypes
+				.Select (buildType => GetDisplayText (buildType))
+				.ToArray ();
+			buildTypeFilterComboBox = new PadToolbarComboBoxItem (toolbar.Properties, nameof (buildTypeFilterComboBox));
+			buildTypeFilterComboBox.AddItems (buildTypeItems);
+			buildTypeFilterComboBox.SelectedIndex = 0;
+			buildTypeFilterComboBox.SelectionChanged += BuildTypeFilterComboBoxChanged;
+			toolbar.AddItem (buildTypeFilterComboBox);
 
 			searchEntry = new PadToolbarSearchItem (toolbar.Properties, nameof (searchEntry));
 			searchEntry.Position = PadToolbarItemPosition.Trailing;
@@ -174,7 +175,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		void BuildTypeFilterComboBoxChanged (object sender, EventArgs e)
 		{
-			widget.BuildType = buildTypes [buildTypeFilterComboBox.Active];
+			widget.BuildType = buildTypes [buildTypeFilterComboBox.SelectedIndex];
 		}
 
 		void SearchEntryChanged (object sender, EventArgs e)
