@@ -2,5 +2,6 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MDBinDir>\Applications\Visual Studio %28Preview%29.app\Contents\MonoBundle</MDBinDir>
+    <MDBinDir>$(MSBuildThisFileDirectory)../../../vsmac/main/build/bin/VisualStudio.app/Contents/MonoBundle</MDBinDir>
   </PropertyGroup>
 </Project>
