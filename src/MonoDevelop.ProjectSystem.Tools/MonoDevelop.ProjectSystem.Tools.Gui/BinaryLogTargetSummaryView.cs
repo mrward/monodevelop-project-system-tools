@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System.Collections.ObjectModel;
+using AppKit;
 using Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor.ViewModel;
 using MonoDevelop.Core;
 using Xwt;
@@ -45,6 +46,12 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		DataField<string> percentageDataField = new DataField<string> ();
 		DataField<double> percentageSortField = new DataField<double> ();
 
+		const int TargetNameColumnIndex = 0;
+		const int SourceFileNameColumnIndex = 1;
+		const int CallsColumnIndex = 2;
+		const int TimeColumnIndex = 3;
+		const int PercentageColumnIndex = 4;
+
 		public BinaryLogTargetSummaryView (ObservableCollection<TargetListViewModel> targetListViewItems)
 		{
 			this.targetListViewItems = targetListViewItems;
@@ -60,7 +67,6 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				percentageSortField);
 
 			AddListViewColumns ();
-
 			AddListViewItems ();
 		}
 
@@ -71,6 +77,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			AddTextColumn (callsDataField, GettextCatalog.GetString ("Calls"), callsSortField);
 			AddTextColumn (timeDataField, GettextCatalog.GetString ("Time"), timeSortField);
 			AddTextColumn (percentageDataField, GettextCatalog.GetString ("Percentage"), percentageSortField);
+
+			SetInitialListViewColumnWidths ();
 		}
 
 		void AddListViewItems ()
@@ -85,6 +93,29 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 				SetTimeValue (row, viewModel.Time, timeDataField, timeSortField);
 				SetPercentageValue (row, viewModel.Percentage, percentageDataField, percentageSortField);
+			}
+		}
+
+		void SetInitialListViewColumnWidths ()
+		{
+			var view = listView.Surface.NativeWidget as NSView;
+			if (view is NSScrollView scroll) {
+				view = scroll.DocumentView as NSView;
+			}
+
+			var tableView = view as NSTableView;
+			if (tableView != null) {
+				var columns = tableView.TableColumns ();
+
+				columns[TargetNameColumnIndex].Width = 250;
+				columns[SourceFileNameColumnIndex].Width = 250;
+				columns[CallsColumnIndex].Width = 50;
+				columns[TimeColumnIndex].Width = 100;
+				columns[PercentageColumnIndex].Width = 80;
+
+				tableView.Identifier = "MonoDevelop.BuildLogging.BuildLogTargetSummaryView.ListView";
+				tableView.AutosaveName = tableView.Identifier;
+				tableView.AutosaveTableColumns = true;
 			}
 		}
 	}
