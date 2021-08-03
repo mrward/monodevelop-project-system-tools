@@ -42,7 +42,8 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		ToolbarButtonItem startButton;
 		ToolbarButtonItem stopButton;
 		ToolbarButtonItem clearButton;
-		ComboBox buildTypeFilterComboBox;
+		ToolbarPopUpButtonItem buildTypeFilterComboBox;
+		ContextMenu buildTypeFilterMenu;
 		ToolbarSearchItem searchEntry;
 		TimeSpan searchDelayTimeSpan = TimeSpan.FromMilliseconds (250);
 		IDisposable searchTimer;
@@ -72,8 +73,11 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			startButton.Clicked -= OnStartButtonClicked;
 			stopButton.Clicked -= OnStopButtonClicked;
 			clearButton.Clicked -= OnClearButtonClicked;
-			buildTypeFilterComboBox.Changed -= BuildTypeFilterComboBoxChanged;
 			searchEntry.TextChanged -= SearchEntryChanged;
+
+			foreach (ContextMenuItem menuItem in buildTypeFilterMenu.Items) {
+				menuItem.Clicked -= BuildTypeFilterComboBoxChanged;
+			}
 
 			DisposeExistingTimer ();
 
@@ -106,13 +110,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			clearButton.Tooltip = GettextCatalog.GetString ("Clear");
 			toolbar.AddItem (clearButton);
 
-			//string[] buildTypeItems = buildTypes
-			//	.Select (buildType => GetDisplayText (buildType))
-			//	.ToArray ();
-			//buildTypeFilterComboBox = new ComboBox (buildTypeItems);
-			//buildTypeFilterComboBox.Active = 0;
-			//buildTypeFilterComboBox.Changed += BuildTypeFilterComboBoxChanged;
-			//toolbar.Add (buildTypeFilterComboBox);
+			buildTypeFilterComboBox = new ToolbarPopUpButtonItem (toolbar.Properties, nameof (buildTypeFilterComboBox));
+			buildTypeFilterComboBox.MenuCreator = () => CreateBuildTypeFilterMenu ();
+			toolbar.AddItem (buildTypeFilterComboBox);
 
 			searchEntry = new ToolbarSearchItem (toolbar.Properties, nameof (searchEntry));
 			searchEntry.Position = ToolbarItemPosition.Trailing;
@@ -128,6 +128,26 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 			ProjectSystemService.MSBuildTargetStarted += MSBuildTargetStarted;
 			ProjectSystemService.MSBuildTargetFinished += MSBuildTargetFinished;
+		}
+
+		ContextMenu CreateBuildTypeFilterMenu ()
+		{
+			string[] buildTypeItems = buildTypes
+				.Select (buildType => GetDisplayText (buildType))
+				.ToArray ();
+
+			buildTypeFilterMenu = new ContextMenu ();
+
+			foreach (BuildType buildType in buildTypes) {
+				var menuItem = new ContextMenuItem ();
+				menuItem.Label = GetDisplayText (buildType);
+				menuItem.Context = buildType;
+				menuItem.Clicked += BuildTypeFilterComboBoxChanged;
+
+				buildTypeFilterMenu.Items.Add (menuItem);
+			}
+
+			return buildTypeFilterMenu;
 		}
 
 		void OnStartButtonClicked (object sender, EventArgs e)
@@ -177,9 +197,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			}
 		}
 
-		void BuildTypeFilterComboBoxChanged (object sender, EventArgs e)
+		void BuildTypeFilterComboBoxChanged (object sender, ContextMenuItemClickedEventArgs e)
 		{
-			widget.BuildType = buildTypes [buildTypeFilterComboBox.Active];
+			widget.BuildType = (BuildType)e.Context;
 		}
 
 		void SearchEntryChanged (object sender, EventArgs e)
