@@ -26,7 +26,6 @@
 
 using System;
 using System.Linq;
-using Gtk;
 using MonoDevelop.Components;
 using MonoDevelop.Components.Declarative;
 using MonoDevelop.Components.Docking;
@@ -88,7 +87,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		protected override void Initialize (IPadWindow window)
 		{
-			var toolbar = new PadToolbar ();
+			var toolbar = new Toolbar ();
 
 			startButton = new ToolbarButtonItem (toolbar.Properties, nameof (startButton));
 			startButton.Icon = Ide.Gui.Stock.RunProgramIcon;
@@ -111,7 +110,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 			toolbar.AddItem (clearButton);
 
 			buildTypeFilterComboBox = new ToolbarPopUpButtonItem (toolbar.Properties, nameof (buildTypeFilterComboBox));
-			buildTypeFilterComboBox.MenuCreator = () => CreateBuildTypeFilterMenu ();
+			buildTypeFilterComboBox.Menu = CreateBuildTypeFilterMenu ();
 			toolbar.AddItem (buildTypeFilterComboBox);
 
 			searchEntry = new ToolbarSearchItem (toolbar.Properties, nameof (searchEntry));
