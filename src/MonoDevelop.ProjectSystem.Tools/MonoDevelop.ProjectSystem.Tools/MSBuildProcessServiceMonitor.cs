@@ -37,27 +37,27 @@ namespace MonoDevelop.ProjectSystem.Tools
 {
 	class MSBuildProcessServiceMonitor : IDisposable
 	{
-		readonly MSBuildProcessService.StartProcessCallback originalHandler;
+		readonly MSBuildProcessService.StartTrackedProcessCallback originalHandler;
 		readonly Dictionary<int, MSBuildTarget> buildTargets = new Dictionary<int, MSBuildTarget> ();
 
 		static int sessionId;
 
 		public MSBuildProcessServiceMonitor ()
 		{
-			originalHandler = MSBuildProcessService.StartProcessHandler;
-			MSBuildProcessService.StartProcessHandler = StartProcess;
+			originalHandler = MSBuildProcessService.StartTrackedProcessHandler;
+			MSBuildProcessService.StartTrackedProcessHandler = StartProcess;
 		}
 
 		public void Dispose ()
 		{
-			MSBuildProcessService.StartProcessHandler = originalHandler;
+			MSBuildProcessService.StartTrackedProcessHandler = originalHandler;
 		}
 
-		ProcessWrapper StartProcess (string command, string arguments, string workingDirectory, TextWriter outWriter, TextWriter errorWriter, EventHandler exited)
+		ProcessWrapper StartProcess (ProcessStartArgs args)
 		{
 			int currentSessionId = Interlocked.Increment (ref sessionId);
 
-			var msbuildProcessArguments = new MSBuildProcessArguments (arguments);
+			var msbuildProcessArguments = new MSBuildProcessArguments (args.Arguments);
 
 			var buildTarget = new MSBuildTarget {
 				ProjectName = GettextCatalog.GetString ("Solution"),
@@ -69,8 +69,8 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 			buildTarget.Start ();
 
-			arguments = MSBuildProcessArguments.AddVerbosity (arguments, Runtime.Preferences.MSBuildVerbosity.Value);
-			arguments = MSBuildProcessArguments.AddBinLogFileName (arguments, buildTarget.BinLogFileName);
+			args.Arguments = MSBuildProcessArguments.AddVerbosity (args.Arguments, Runtime.Preferences.MSBuildVerbosity.Value);
+			args.Arguments = MSBuildProcessArguments.AddBinLogFileName (args.Arguments, buildTarget.BinLogFileName);
 
 			lock (buildTargets) {
 				buildTargets [currentSessionId] = buildTarget;
@@ -78,15 +78,15 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 			ProjectSystemService.OnTargetStarted (buildTarget);
 
-			var monitor = new MSBuildProcessProgressMonitor (outWriter, errorWriter, buildTarget.LogFileName);
+			var monitor = new MSBuildProcessProgressMonitor (args.OutWriter, args.ErrorWriter, buildTarget.LogFileName);
 
 			ProcessWrapper process = Runtime.ProcessService.StartProcess (
-				command,
-				arguments,
-				workingDirectory,
+				args.Command,
+				args.Arguments,
+				args.WorkingDirectory,
 				monitor.Log,
 				monitor.ErrorLog,
-				exited);
+				args.Exited);
 
 			monitor.Process = process;
 
