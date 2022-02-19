@@ -1,87 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Common.Build.props" />
   <Import Project="MonoDevelop.References.props" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{992972DC-DE0E-42BF-BB00-86B4512723BD}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>MonoDevelop.ProjectSystem.Tools</RootNamespace>
-    <AssemblyName>MonoDevelop.ProjectSystem.Tools</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\..\bin</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Microsoft.Build">
-      <HintPath>$(MSBuildToolsPath)\Microsoft.Build.dll</HintPath>
+      <HintPath>$(MDBinDir)\Microsoft.Build.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Build.Framework">
-      <HintPath>$(MSBuildToolsPath)\Microsoft.Build.Framework.dll</HintPath>
+      <HintPath>$(MDBinDir)\Microsoft.Build.Framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Build.Utilities.Core">
-      <HintPath>$(MSBuildToolsPath)\Microsoft.Build.Utilities.Core.dll</HintPath>
+      <HintPath>$(MDBinDir)\Microsoft.Build.Utilities.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <IncludeInPackage>false</IncludeInPackage>
-    </Compile>
-    <Compile Include="Properties\AddinInfo.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildLoggingProjectExtension.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\ProjectSystemService.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetMonitor.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BuildLoggingPad.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BuildLoggingWidget.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BuildLoggingWidget.UI.cs">
+    <Compile Update="MonoDevelop.ProjectSystem.Tools.Gui\BuildLoggingWidget.UI.cs">
       <DependentUpon>BuildLoggingWidget.cs</DependentUpon>
     </Compile>
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetEventArgs.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTarget.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetStatus.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetStatusExtensions.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\ProjectExtensions.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\TargetEvaluationResultExtensions.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildTargetProgressMonitor.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildLoggingCommands.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildLoggingSolutionExtension.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildBinLogProgressMonitor.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildSession.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\BinaryLogProcessor.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\BuildType.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogDocumentControllerExtension.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogTargetSummaryView.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogTaskSummaryView.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogSummaryViewBase.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogEvaluationSummaryView.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools.Gui\BinaryLogBuildTreeView.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessServiceMonitor.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessArguments.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\SolutionExtensions.cs" />
-    <Compile Include="MonoDevelop.ProjectSystem.Tools\MSBuildProcessProgressMonitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\MonoDevelop.ProjectSystem.Tools.addin.xml">
@@ -89,14 +32,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.LogModel\Microsoft.VisualStudio.ProjectSystem.LogModel.csproj">
-      <Project>{03755881-A132-4CC3-9EC4-CD33192C4428}</Project>
-      <Name>Microsoft.VisualStudio.ProjectSystem.LogModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.Tools\Microsoft.VisualStudio.ProjectSystem.Tools.csproj">
-      <Project>{0E542C28-B9D6-4E2F-9C72-48063AB67007}</Project>
-      <Name>Microsoft.VisualStudio.ProjectSystem.Tools</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.LogModel\Microsoft.VisualStudio.ProjectSystem.LogModel.csproj" />
+    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.Tools\Microsoft.VisualStudio.ProjectSystem.Tools.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,44 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Common.Build.props" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0E542C28-B9D6-4E2F-9C72-48063AB67007}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Microsoft.VisualStudio.ProjectSystem.Tools</RootNamespace>
-    <AssemblyName>Microsoft.VisualStudio.ProjectSystem.Tools</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="Microsoft.Build">
-      <HintPath>$(MSBuildToolsPath)\Microsoft.Build.dll</HintPath>
+      <HintPath>$(MDBinDir)\Microsoft.Build.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Build.Framework">
-      <HintPath>$(MSBuildToolsPath)\Microsoft.Build.Framework.dll</HintPath>
+      <HintPath>$(MDBinDir)\Microsoft.Build.Framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Build.Utilities.Core">
-      <HintPath>$(MSBuildToolsPath)\Microsoft.Build.Utilities.Core.dll</HintPath>
+      <HintPath>$(MDBinDir)\Microsoft.Build.Utilities.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Collections.Immutable">
@@ -47,9 +30,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor\BinaryLogDocumentData.cs" />
-    <Compile Include="Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor\BinaryLogViewModels.cs" />
     <Compile Include="..\..\external\project-system-tools\src\ProjectSystemTools\BinaryLogEditor\ViewModel\BaseViewModel.cs">
       <Link>Microsoft.VisualStudio.ProjectSystem.Tools.BinaryLogEditor.ViewModel\BaseViewModel.cs</Link>
     </Compile>
@@ -116,17 +96,8 @@
     <Compile Include="..\..\external\project-system-tools\src\ProjectSystemTools\TableControl\TableKeyNames.cs">
       <Link>Microsoft.VisualStudio.ProjectSystem.Tools.TableControl\TableKeyNames.cs</Link>
     </Compile>
-    <Compile Include="Microsoft.VisualStudio.Shell.Interop\__VSERRORCATEGORY.cs" />
-    <Compile Include="Microsoft.VisualStudio.Shell.TableManager\ITableDataSink.cs" />
-    <Compile Include="Microsoft.VisualStudio.Shell.TableManager\ITableDataSource.cs" />
-    <Compile Include="Microsoft.VisualStudio.Shell.TableManager\ITableEntry.cs" />
-    <Compile Include="Microsoft.VisualStudio.Shell.TableManager\StandardTableKeyNames.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.LogModel\Microsoft.VisualStudio.ProjectSystem.LogModel.csproj">
-      <Project>{03755881-A132-4CC3-9EC4-CD33192C4428}</Project>
-      <Name>Microsoft.VisualStudio.ProjectSystem.LogModel</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.VisualStudio.ProjectSystem.LogModel\Microsoft.VisualStudio.ProjectSystem.LogModel.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
