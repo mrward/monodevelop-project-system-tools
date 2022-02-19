@@ -102,7 +102,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 				navigator.SetValue (textDataField, GetTreeNodeText (nodeViewModel));
 				navigator.SetValue (imageDataField, GetTreeNodeImage (nodeViewModel));
 			} else {
-				navigator.SetValue (textDataField, GLib.Markup.EscapeText (viewModel.Text));
+				navigator.SetValue (textDataField, viewModel.Text);
 			}
 
 			navigator.SetValue (viewModelDataField, viewModel);
@@ -110,7 +110,7 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 
 		static string GetTreeNodeText (NodeViewModel nodeViewModel)
 		{
-			string markup = GLib.Markup.EscapeText (nodeViewModel.Text);
+			string markup = nodeViewModel.Text;
 
 			switch (nodeViewModel.Result) {
 				case Result.Failed:
