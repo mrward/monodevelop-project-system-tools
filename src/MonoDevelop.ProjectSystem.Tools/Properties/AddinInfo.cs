@@ -28,7 +28,7 @@ using Mono.Addins;
 [assembly: Addin (
 	"ProjectSystemTools",
 	Namespace = "MonoDevelop",
-	Version = "0.8",
+	Version = "0.9",
 	Category = "IDE extensions")]
 
 [assembly: AddinName ("Project System Tools")]
