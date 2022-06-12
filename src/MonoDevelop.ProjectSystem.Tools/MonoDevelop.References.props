@@ -41,7 +41,7 @@
       <HintPath>$(MDBinDir)\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Mac">
-      <HintPath>/usr/local/share/dotnet/packs/Microsoft.macOS.Ref/12.1.301-preview.13.4/ref/net6.0/Xamarin.Mac.dll</HintPath>
+      <HintPath>/usr/local/share/dotnet/packs/Microsoft.macOS.Ref/12.1.301-preview.13.7/ref/net6.0/Xamarin.Mac.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Xwt">
