@@ -132,9 +132,9 @@ namespace MonoDevelop.ProjectSystem.Tools.Gui
 		{
 			switch (nodeViewModel.Result) {
 				case Result.Failed:
-					return ImageService.GetIcon (Stock.Error, Gtk.IconSize.Menu);
+					return ImageService.GetIcon (Stock.Error, IconSize.Small);
 				case Result.Succeeded:
-					return ImageService.GetIcon ("md-done", Gtk.IconSize.Menu);
+					return ImageService.GetIcon ("md-done", IconSize.Small);
 
 				default:
 					return null;
