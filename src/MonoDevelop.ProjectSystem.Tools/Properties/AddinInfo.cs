@@ -34,5 +34,5 @@ using Mono.Addins;
 [assembly: AddinName ("Project System Tools")]
 [assembly: AddinDescription ("Tools for working the project system")]
 
-[assembly: AddinDependency ("Core", "17.0")]
-[assembly: AddinDependency ("Ide", "17.0")]
+[assembly: AddinDependency ("Core", "17.3")]
+[assembly: AddinDependency ("Ide", "17.3")]
