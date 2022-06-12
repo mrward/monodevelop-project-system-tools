@@ -27,6 +27,7 @@
 using System;
 using System.Text;
 using MonoDevelop.Core;
+using MonoDevelop.Core.PooledObjects;
 using MonoDevelop.Projects.MSBuild;
 
 namespace MonoDevelop.ProjectSystem.Tools
@@ -53,7 +54,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 		{
 			const string targetArgument = "--target:";
 
-			var targetsBuilder = StringBuilderCache.Allocate ();
+			var targetsBuilder = PooledStringBuilder.GetInstance ();
 
 			string[] parts = arguments.Split (' ');
 			foreach (string part in parts) {
@@ -64,7 +65,7 @@ namespace MonoDevelop.ProjectSystem.Tools
 				}
 			}
 
-			Targets = StringBuilderCache.ReturnAndFree (targetsBuilder);
+			Targets = targetsBuilder.ToStringAndFree ();
 			BuildType = MSBuildTarget.GetBuildType (Targets);
 		}
 

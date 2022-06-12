@@ -27,13 +27,14 @@
 using System.IO;
 using System.Text;
 using MonoDevelop.Core;
+using MonoDevelop.Core.PooledObjects;
 using MonoDevelop.Core.ProgressMonitoring;
 
 namespace MonoDevelop.ProjectSystem.Tools
 {
 	class MSBuildTargetProgressMonitor : ProgressMonitor
 	{
-		readonly StringBuilder logBuilder = StringBuilderCache.Allocate ();
+		PooledStringBuilder logBuilder = PooledStringBuilder.GetInstance ();
 		readonly FilePath logFileName;
 		bool disposed;
 
@@ -74,10 +75,8 @@ namespace MonoDevelop.ProjectSystem.Tools
 
 		void SaveLogOutputToFile ()
 		{
-			string text = logBuilder.ToString ();
+			string text = logBuilder.ToStringAndFree ();
 			File.WriteAllText (logFileName, text);
-
-			StringBuilderCache.Free (logBuilder);
 		}
 	}
 }
