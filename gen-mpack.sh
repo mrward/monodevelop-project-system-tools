@@ -1,1 +1,1 @@
-mono /Applications/Visual\ Studio.app/Contents/Resources/lib/monodevelop/bin/vstool.exe setup pack bin/MonoDevelop.ProjectSystem.Tools.dll
+"/Applications/Visual Studio.app/Contents/MacOS/vstool" setup pack $PWD/bin/MonoDevelop.ProjectSystem.Tools.dll -d:$PWD
