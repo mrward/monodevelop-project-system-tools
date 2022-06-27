@@ -1,5 +1,12 @@
 <Project>
   <ItemGroup>
+   <PackageReference Include="System.Runtime.InteropServices.NFloat.Internal" Version="6.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.macOS">
+      <HintPath>$(MDBinDir)\Microsoft.macOS.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Mono.Addins">
       <Private>False</Private>
       <HintPath>$(MDBinDir)\Mono.Addins.dll</HintPath>
@@ -23,10 +30,6 @@
     <Reference Include="System.Collections.Immutable">
       <Private>False</Private>
       <HintPath>$(MDBinDir)\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Mac">
-      <HintPath>/usr/local/share/dotnet/packs/Microsoft.macOS.Ref/12.1.301-preview.13.7/ref/net6.0/Xamarin.Mac.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Xwt">
       <Private>False</Private>
