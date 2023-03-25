@@ -6,8 +6,8 @@
 	</Runtime>
 
 	<Extension path="/MonoDevelop/ProjectModel/ProjectModelExtensions">
-		<Class class="MonoDevelop.ProjectSystem.Tools.BuildLoggingProjectExtension" insertbefore="InitialStep" />
-		<Class class="MonoDevelop.ProjectSystem.Tools.BuildLoggingSolutionExtension" insertbefore="InitialStep" />
+		<Class class="MonoDevelop.ProjectSystem.Tools.BuildLoggingProjectExtension" />
+		<Class class="MonoDevelop.ProjectSystem.Tools.BuildLoggingSolutionExtension" />
 	</Extension>
 
 	<Extension path="/MonoDevelop/Ide/Commands">
